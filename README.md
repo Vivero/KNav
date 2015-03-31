@@ -1,22 +1,21 @@
 # KNav
-Kerbal Navigation Suite, and KRPC Interface libraries
-
----------------------
 
 KNav is a flexible platform for implementing computer-assisted navigation and control of vessels in Kerbal Space Program.
 
 KNav is a [kRPC](https://github.com/djungelorm/krpc)-compatible CLI client, written in **C++**. KNav is currently only supported on **Windows**, and compiled with MS Visual Studio Express 2013 for Windows Desktop.
 
-**Note:** *KNav is very new code. It's only useful in-game capability right now is that it allows your craft to maintain a fixed-altitude hover. However, the underlying code should be useful for anyone looking to implement their own auto-pilot programming in C++.*
+**Note:** *KNav is very new code. Support is limited at this point. Its only useful in-game capability right now is that it allows your craft to maintain a fixed-altitude hover. However, the underlying code should be useful for anyone looking to implement their own auto-pilot programming in C++.*
 
 Usage:
 
 ```
-> KNav.exe [ip address]
+> KNav.exe [ip address] [port]
 
 
     [ip address]              IP address of host running KSP with kRPC server plugin.
                               If unspecified, defaults to 127.0.0.1 (localhost)
+                              
+    [port]                    port for the RPC server
 ```
 
 KNav requires the kRPC server plugin for KSP. Compiling KNav requires the [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) library, kRPC's protocol buffer message definitions file (compiled for C++), and two libraries included in this repository:
@@ -48,7 +47,9 @@ Usage:
     <output dir>              Directory to place output files
 ```
 
-With this tool, changes made to the kRPC `SpaceCenter` service on the plugin side can be effortlessly reflected back on
-the C++ client side, without requiring a manual re-write of functions to implement each and every procedure supported by
-the `SpaceCenter` service.
+With this tool, changes made to the kRPC `SpaceCenter` service (or any other future services) on the plugin side can be 
+effortlessly reflected back on the C++ client side, without requiring a manual re-write of functions to implement 
+each and every procedure supported by the `SpaceCenter` service.
+
+Regenerating the KRPCI_SpaceCenter class (or any other service classes) would, of course, require a re-compile of your C++ client that implements these generated classes. I can't really think of any way where a C++ client can query the kRPC services on-the-fly without a re-compile. [djungelorm](https://github.com/djungelorm)'s Python client *does* do this, just by the nature of the Python language itself.
 
