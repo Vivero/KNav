@@ -79,9 +79,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\google\protobuf\compiler\code_generator.h" />
     <ClInclude Include="include\google\protobuf\compiler\command_line_interface.h" />
     <ClInclude Include="include\google\protobuf\compiler\cpp\cpp_generator.h" />

@@ -608,7 +608,7 @@ BOOL KRPCI::RecvResponse_Status(double &time, std::string &version)
 
 SOCKET KRPCI::_connectToServer(char *ipAddr, char *port)
 {
-  SOCKET socketToServer;
+  SOCKET socketToServer = INVALID_SOCKET;
   HRESULT result = S_OK;
   INT retval;
   struct addrinfo *addrResolved = NULL, *pAddr = NULL, addrHints;

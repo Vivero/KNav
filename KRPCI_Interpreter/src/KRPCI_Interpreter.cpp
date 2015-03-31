@@ -22,9 +22,11 @@ void KRPCI_Interpreter::OutputCppHeaderFile(std::string filename)
 
   FILE *pFile = fopen(filename.c_str(), "w");
 
+  string krpcServiceName_cap = _toUpper(krpcServiceName);
+
   // header guard
-  fprintf(pFile, "#ifndef %s_H \n", _toUpper(krpcServiceName).c_str());
-  fprintf(pFile, "#define %s_H \n\n", _toUpper(krpcServiceName).c_str());
+  fprintf(pFile, "#ifndef %s_H \n", krpcServiceName_cap.c_str());
+  fprintf(pFile, "#define %s_H \n\n", krpcServiceName_cap.c_str());
 
   // include files
   fprintf(pFile, "#include \"stdafx.h\"\n");

@@ -80,10 +80,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\KNav.h" />
     <ClInclude Include="include\KNav_Control.h" />
     <ClInclude Include="include\KNav_Display.h" />
     <ClInclude Include="include\KNav_Telemetry.h" />
@@ -91,7 +87,6 @@
     <ClInclude Include="include\targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\KNav.cpp" />
     <ClCompile Include="src\KNav_Control.cpp" />
     <ClCompile Include="src\KNav_Display.cpp" />
     <ClCompile Include="src\KNav_Telemetry.cpp" />

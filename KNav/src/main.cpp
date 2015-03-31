@@ -2,7 +2,6 @@
 //
 
 #include "stdafx.h"
-#include "KNav.h"
 #include "KNav_Control.h"
 #include "KNav_Display.h"
 #include "KRPCI.h"
