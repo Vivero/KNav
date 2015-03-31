@@ -1,0 +1,1382 @@
+krpcRecvMessage_Services received. Found 2 services.
+Service         Procedures      Classes         Enums
+----------------------------------------------------------------
+SpaceCenter     201             10              2
+KRPC            4               0               0
+
+***
+*** Service: SpaceCenter
+***
+== PROCEDURES ==
+> WarpTo
+    Param:                   UT,               double
+    Param:              maxRate,               double, ( 8b) (0x00 0x00 0x00 0x00 0x00 0x6A 0xF8 0x40 ) 100000.000000
+
+> TransformPosition
+    Param:             position,           KRPC.Tuple
+    Param:                 from,               uint64
+    Param:                   to,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: ParameterType(0).Tuple(double,double,double)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ParameterType(2).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> TransformDirection
+    Param:            direction,           KRPC.Tuple
+    Param:                 from,               uint64
+    Param:                   to,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: ParameterType(0).Tuple(double,double,double)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ParameterType(2).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> TransformRotation
+    Param:             rotation,           KRPC.Tuple
+    Param:                 from,               uint64
+    Param:                   to,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: ParameterType(0).Tuple(double,double,double,double)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ParameterType(2).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double,double)
+
+> TransformVelocity
+    Param:             position,           KRPC.Tuple
+    Param:             velocity,           KRPC.Tuple
+    Param:                 from,               uint64
+    Param:                   to,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: ParameterType(0).Tuple(double,double,double)
+    Attrb: ParameterType(1).Tuple(double,double,double)
+    Attrb: ParameterType(2).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ParameterType(3).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> DrawDirection
+    Param:            direction,           KRPC.Tuple
+    Param:       referenceFrame,               uint64
+    Param:                color,           KRPC.Tuple
+    Param:               length,                float, ( 4b) (0x00 0x00 0x20 0x41 ) 10.000000
+    Attrb: ParameterType(0).Tuple(double,double,double)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ParameterType(2).Tuple(double,double,double)
+
+> ClearDirections
+
+> get_ActiveVessel
+    Retrn:               uint64
+    Attrb: Property.Get(ActiveVessel)
+    Attrb: ReturnType.Class(SpaceCenter.Vessel)
+
+> get_Vessels
+    Retrn:            KRPC.List
+    Attrb: Property.Get(Vessels)
+    Attrb: ReturnType.List(Class(SpaceCenter.Vessel))
+
+> get_Bodies
+    Retrn:      KRPC.Dictionary
+    Attrb: Property.Get(Bodies)
+    Attrb: ReturnType.Dictionary(string,Class(SpaceCenter.CelestialBody))
+
+> get_UT
+    Retrn:               double
+    Attrb:     Property.Get(UT)
+
+> get_G
+    Retrn:               double
+    Attrb:      Property.Get(G)
+
+> get_FARAvailable
+    Retrn:                 bool
+    Attrb: Property.Get(FARAvailable)
+
+> get_RemoteTechAvailable
+    Retrn:                 bool
+    Attrb: Property.Get(RemoteTechAvailable)
+
+> AutoPilot_SetRotation
+    Param:                 this,               uint64
+    Param:                pitch,               double
+    Param:              heading,               double
+    Param:                 roll,               double, ( 8b) (0x00 0x00 0x00 0x00 0x00 0x00 0xF8 0xFF ) -1.#IND00
+    Param:       referenceFrame,               uint64, ( 1b) (0x00 )
+    Param:                 wait,                 bool, ( 1b) (0x00 )
+    Attrb: Class.Method(SpaceCenter.AutoPilot,SetRotation)
+    Attrb: ParameterType(0).Class(SpaceCenter.AutoPilot)
+    Attrb: ParameterType(4).Class(SpaceCenter.ReferenceFrame)
+
+> AutoPilot_SetDirection
+    Param:                 this,               uint64
+    Param:            direction,           KRPC.Tuple
+    Param:                 roll,               double, ( 8b) (0x00 0x00 0x00 0x00 0x00 0x00 0xF8 0xFF ) -1.#IND00
+    Param:       referenceFrame,               uint64, ( 1b) (0x00 )
+    Param:                 wait,                 bool, ( 1b) (0x00 )
+    Attrb: Class.Method(SpaceCenter.AutoPilot,SetDirection)
+    Attrb: ParameterType(0).Class(SpaceCenter.AutoPilot)
+    Attrb: ParameterType(1).Tuple(double,double,double)
+    Attrb: ParameterType(3).Class(SpaceCenter.ReferenceFrame)
+
+> AutoPilot_Disengage
+    Param:                 this,               uint64
+    Attrb: Class.Method(SpaceCenter.AutoPilot,Disengage)
+    Attrb: ParameterType(0).Class(SpaceCenter.AutoPilot)
+
+> AutoPilot_get_Error
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.AutoPilot,Error)
+    Attrb: ParameterType(0).Class(SpaceCenter.AutoPilot)
+
+> CelestialBody_AtmospherePressureAt
+    Param:                 this,               uint64
+    Param:             altitude,               double
+    Retrn:               double
+    Attrb: Class.Method(SpaceCenter.CelestialBody,AtmospherePressureAt)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_AtmosphereDensityAt
+    Param:                 this,               uint64
+    Param:             altitude,               double
+    Retrn:               double
+    Attrb: Class.Method(SpaceCenter.CelestialBody,AtmosphereDensityAt)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_Position
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.CelestialBody,Position)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> CelestialBody_Velocity
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.CelestialBody,Velocity)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> CelestialBody_Rotation
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.CelestialBody,Rotation)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double,double)
+
+> CelestialBody_Direction
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.CelestialBody,Direction)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> CelestialBody_AngularVelocity
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.CelestialBody,AngularVelocity)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> CelestialBody_get_Name
+    Param:                 this,               uint64
+    Retrn:               string
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,Name)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_Satellites
+    Param:                 this,               uint64
+    Retrn:            KRPC.List
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,Satellites)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ReturnType.List(Class(SpaceCenter.CelestialBody))
+
+> CelestialBody_get_Mass
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,Mass)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_GravitationalParameter
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,GravitationalParameter)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_SurfaceGravity
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,SurfaceGravity)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_RotationalPeriod
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,RotationalPeriod)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_RotationalSpeed
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,RotationalSpeed)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_EquatorialRadius
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,EquatorialRadius)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_SphereOfInfluence
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,SphereOfInfluence)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_Orbit
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,Orbit)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ReturnType.Class(SpaceCenter.Orbit)
+
+> CelestialBody_get_HasAtmosphere
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,HasAtmosphere)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_AtmospherePressure
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,AtmospherePressure)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_AtmosphereDensity
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,AtmosphereDensity)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_AtmosphereScaleHeight
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,AtmosphereScaleHeight)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_AtmosphereMaxAltitude
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,AtmosphereMaxAltitude)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+
+> CelestialBody_get_ReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,ReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> CelestialBody_get_NonRotatingReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,NonRotatingReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> CelestialBody_get_OrbitalReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.CelestialBody,OrbitalReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.CelestialBody)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> Comms_SignalDelayToVessel
+    Param:                 this,               uint64
+    Param:                other,               uint64
+    Retrn:               double
+    Attrb: Class.Method(SpaceCenter.Comms,SignalDelayToVessel)
+    Attrb: ParameterType(0).Class(SpaceCenter.Comms)
+    Attrb: ParameterType(1).Class(SpaceCenter.Vessel)
+
+> Comms_get_HasFlightComputer
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Comms,HasFlightComputer)
+    Attrb: ParameterType(0).Class(SpaceCenter.Comms)
+
+> Comms_get_HasConnection
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Comms,HasConnection)
+    Attrb: ParameterType(0).Class(SpaceCenter.Comms)
+
+> Comms_get_HasConnectionToGroundStation
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Comms,HasConnectionToGroundStation)
+    Attrb: ParameterType(0).Class(SpaceCenter.Comms)
+
+> Comms_get_SignalDelay
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Comms,SignalDelay)
+    Attrb: ParameterType(0).Class(SpaceCenter.Comms)
+
+> Comms_get_SignalDelayToGroundStation
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Comms,SignalDelayToGroundStation)
+    Attrb: ParameterType(0).Class(SpaceCenter.Comms)
+
+> Control_ActivateNextStage
+    Param:                 this,               uint64
+    Retrn:            KRPC.List
+    Attrb: Class.Method(SpaceCenter.Control,ActivateNextStage)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+    Attrb: ReturnType.List(Class(SpaceCenter.Vessel))
+
+> Control_GetActionGroup
+    Param:                 this,               uint64
+    Param:                group,               uint32
+    Retrn:                 bool
+    Attrb: Class.Method(SpaceCenter.Control,GetActionGroup)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_SetActionGroup
+    Param:                 this,               uint64
+    Param:                group,               uint32
+    Param:                state,                 bool
+    Attrb: Class.Method(SpaceCenter.Control,SetActionGroup)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_ToggleActionGroup
+    Param:                 this,               uint64
+    Param:                group,               uint32
+    Attrb: Class.Method(SpaceCenter.Control,ToggleActionGroup)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_AddNode
+    Param:                 this,               uint64
+    Param:                   UT,               double
+    Param:             prograde,               double, ( 8b) (0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 ) 0.000000
+    Param:               normal,               double, ( 8b) (0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 ) 0.000000
+    Param:               radial,               double, ( 8b) (0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00 ) 0.000000
+    Retrn:               uint64
+    Attrb: Class.Method(SpaceCenter.Control,AddNode)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+    Attrb: ReturnType.Class(SpaceCenter.Node)
+
+> Control_RemoveNodes
+    Param:                 this,               uint64
+    Attrb: Class.Method(SpaceCenter.Control,RemoveNodes)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_SAS
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Control,SAS)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_SAS
+    Param:                 this,               uint64
+    Param:                value,                 bool
+    Attrb: Class.Property.Set(SpaceCenter.Control,SAS)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_RCS
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Control,RCS)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_RCS
+    Param:                 this,               uint64
+    Param:                value,                 bool
+    Attrb: Class.Property.Set(SpaceCenter.Control,RCS)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Gear
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Control,Gear)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Gear
+    Param:                 this,               uint64
+    Param:                value,                 bool
+    Attrb: Class.Property.Set(SpaceCenter.Control,Gear)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Lights
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Control,Lights)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Lights
+    Param:                 this,               uint64
+    Param:                value,                 bool
+    Attrb: Class.Property.Set(SpaceCenter.Control,Lights)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Brakes
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Control,Brakes)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Brakes
+    Param:                 this,               uint64
+    Param:                value,                 bool
+    Attrb: Class.Property.Set(SpaceCenter.Control,Brakes)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Abort
+    Param:                 this,               uint64
+    Retrn:                 bool
+    Attrb: Class.Property.Get(SpaceCenter.Control,Abort)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Abort
+    Param:                 this,               uint64
+    Param:                value,                 bool
+    Attrb: Class.Property.Set(SpaceCenter.Control,Abort)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Throttle
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,Throttle)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Throttle
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,Throttle)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Pitch
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,Pitch)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Pitch
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,Pitch)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Yaw
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,Yaw)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Yaw
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,Yaw)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Roll
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,Roll)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Roll
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,Roll)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Forward
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,Forward)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Forward
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,Forward)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Up
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,Up)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Up
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,Up)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Right
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,Right)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_Right
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,Right)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_WheelThrottle
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,WheelThrottle)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_WheelThrottle
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,WheelThrottle)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_WheelSteering
+    Param:                 this,               uint64
+    Retrn:                float
+    Attrb: Class.Property.Get(SpaceCenter.Control,WheelSteering)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_set_WheelSteering
+    Param:                 this,               uint64
+    Param:                value,                float
+    Attrb: Class.Property.Set(SpaceCenter.Control,WheelSteering)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_CurrentStage
+    Param:                 this,               uint64
+    Retrn:                int32
+    Attrb: Class.Property.Get(SpaceCenter.Control,CurrentStage)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+
+> Control_get_Nodes
+    Param:                 this,               uint64
+    Retrn:            KRPC.List
+    Attrb: Class.Property.Get(SpaceCenter.Control,Nodes)
+    Attrb: ParameterType(0).Class(SpaceCenter.Control)
+    Attrb: ReturnType.List(Class(SpaceCenter.Node))
+
+> Flight_get_GForce
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,GForce)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_MeanAltitude
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,MeanAltitude)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_SurfaceAltitude
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,SurfaceAltitude)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_BedrockAltitude
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,BedrockAltitude)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_Elevation
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Elevation)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_Latitude
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Latitude)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_Longitude
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Longitude)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_Velocity
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Velocity)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_Speed
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Speed)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_HorizontalSpeed
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,HorizontalSpeed)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_VerticalSpeed
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,VerticalSpeed)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_CenterOfMass
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,CenterOfMass)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_Rotation
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Rotation)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double,double)
+
+> Flight_get_Direction
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Direction)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_Pitch
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Pitch)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_Heading
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Heading)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_Roll
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Roll)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_Prograde
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Prograde)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_Retrograde
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Retrograde)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_Normal
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Normal)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_AntiNormal
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,AntiNormal)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_Radial
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Radial)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_AntiRadial
+    Param:                 this,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Property.Get(SpaceCenter.Flight,AntiRadial)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Flight_get_AtmosphereDensity
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,AtmosphereDensity)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_Drag
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,Drag)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_DynamicPressure
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,DynamicPressure)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_AngleOfAttack
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,AngleOfAttack)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_SideslipAngle
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,SideslipAngle)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_StallFraction
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,StallFraction)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_MachNumber
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,MachNumber)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_TerminalVelocity
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,TerminalVelocity)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_DragCoefficient
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,DragCoefficient)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_LiftCoefficient
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,LiftCoefficient)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_PitchingMomentCoefficient
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,PitchingMomentCoefficient)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_BallisticCoefficient
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,BallisticCoefficient)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_ThrustSpecificFuelConsumption
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Flight,ThrustSpecificFuelConsumption)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Flight_get_FARStatus
+    Param:                 this,               uint64
+    Retrn:               string
+    Attrb: Class.Property.Get(SpaceCenter.Flight,FARStatus)
+    Attrb: ParameterType(0).Class(SpaceCenter.Flight)
+
+> Node_BurnVector
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64, ( 1b) (0x00 )
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Node,BurnVector)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Node_RemainingBurnVector
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64, ( 1b) (0x00 )
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Node,RemainingBurnVector)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Node_Remove
+    Param:                 this,               uint64
+    Attrb: Class.Method(SpaceCenter.Node,Remove)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_Position
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Node,Position)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Node_Direction
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Node,Direction)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Node_get_Prograde
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Node,Prograde)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_set_Prograde
+    Param:                 this,               uint64
+    Param:                value,               double
+    Attrb: Class.Property.Set(SpaceCenter.Node,Prograde)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_get_Normal
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Node,Normal)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_set_Normal
+    Param:                 this,               uint64
+    Param:                value,               double
+    Attrb: Class.Property.Set(SpaceCenter.Node,Normal)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_get_Radial
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Node,Radial)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_set_Radial
+    Param:                 this,               uint64
+    Param:                value,               double
+    Attrb: Class.Property.Set(SpaceCenter.Node,Radial)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_get_DeltaV
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Node,DeltaV)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_set_DeltaV
+    Param:                 this,               uint64
+    Param:                value,               double
+    Attrb: Class.Property.Set(SpaceCenter.Node,DeltaV)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_get_RemainingDeltaV
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Node,RemainingDeltaV)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_get_UT
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Node,UT)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_set_UT
+    Param:                 this,               uint64
+    Param:                value,               double
+    Attrb: Class.Property.Set(SpaceCenter.Node,UT)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_get_TimeTo
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Node,TimeTo)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+
+> Node_get_Orbit
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Node,Orbit)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+    Attrb: ReturnType.Class(SpaceCenter.Orbit)
+
+> Node_get_ReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Node,ReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> Node_get_OrbitalReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Node,OrbitalReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.Node)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> Orbit_ReferencePlaneNormal
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Orbit,ReferencePlaneNormal)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Orbit_ReferencePlaneDirection
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Orbit,ReferencePlaneDirection)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Orbit_get_Body
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Body)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+    Attrb: ReturnType.Class(SpaceCenter.CelestialBody)
+
+> Orbit_get_Apoapsis
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Apoapsis)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_Periapsis
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Periapsis)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_ApoapsisAltitude
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,ApoapsisAltitude)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_PeriapsisAltitude
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,PeriapsisAltitude)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_SemiMajorAxis
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,SemiMajorAxis)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_SemiMinorAxis
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,SemiMinorAxis)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_Radius
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Radius)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_Speed
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Speed)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_Period
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Period)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_TimeToApoapsis
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,TimeToApoapsis)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_TimeToPeriapsis
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,TimeToPeriapsis)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_Eccentricity
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Eccentricity)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_Inclination
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Inclination)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_LongitudeOfAscendingNode
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,LongitudeOfAscendingNode)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_ArgumentOfPeriapsis
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,ArgumentOfPeriapsis)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_MeanAnomalyAtEpoch
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,MeanAnomalyAtEpoch)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_Epoch
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,Epoch)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_MeanAnomaly
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,MeanAnomaly)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_EccentricAnomaly
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,EccentricAnomaly)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_NextOrbit
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,NextOrbit)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+    Attrb: ReturnType.Class(SpaceCenter.Orbit)
+
+> Orbit_get_TimeToSOIChange
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,TimeToSOIChange)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+
+> Orbit_get_ReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Orbit,ReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.Orbit)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> Resources_HasResource
+    Param:                 this,               uint64
+    Param:                 name,               string
+    Retrn:                 bool
+    Attrb: Class.Method(SpaceCenter.Resources,HasResource)
+    Attrb: ParameterType(0).Class(SpaceCenter.Resources)
+
+> Resources_Max
+    Param:                 this,               uint64
+    Param:                 name,               string
+    Param:                stage,                int32, (10b) (0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0x01 )
+    Param:           cumulative,                 bool, ( 1b) (0x01 )
+    Retrn:               double
+    Attrb: Class.Method(SpaceCenter.Resources,Max)
+    Attrb: ParameterType(0).Class(SpaceCenter.Resources)
+
+> Resources_Amount
+    Param:                 this,               uint64
+    Param:                 name,               string
+    Param:                stage,                int32, (10b) (0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF 0x01 )
+    Param:           cumulative,                 bool, ( 1b) (0x01 )
+    Retrn:               double
+    Attrb: Class.Method(SpaceCenter.Resources,Amount)
+    Attrb: ParameterType(0).Class(SpaceCenter.Resources)
+
+> Resources_get_Names
+    Param:                 this,               uint64
+    Retrn:            KRPC.List
+    Attrb: Class.Property.Get(SpaceCenter.Resources,Names)
+    Attrb: ParameterType(0).Class(SpaceCenter.Resources)
+    Attrb: ReturnType.List(string)
+
+> Vessel_Flight
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64, ( 1b) (0x00 )
+    Retrn:               uint64
+    Attrb: Class.Method(SpaceCenter.Vessel,Flight)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Class(SpaceCenter.Flight)
+
+> Vessel_Position
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Vessel,Position)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Vessel_Velocity
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Vessel,Velocity)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Vessel_Rotation
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Vessel,Rotation)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double,double)
+
+> Vessel_Direction
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Vessel,Direction)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Vessel_AngularVelocity
+    Param:                 this,               uint64
+    Param:       referenceFrame,               uint64
+    Retrn:           KRPC.Tuple
+    Attrb: Class.Method(SpaceCenter.Vessel,AngularVelocity)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ParameterType(1).Class(SpaceCenter.ReferenceFrame)
+    Attrb: ReturnType.Tuple(double,double,double)
+
+> Vessel_get_Name
+    Param:                 this,               uint64
+    Retrn:               string
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Name)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+
+> Vessel_set_Name
+    Param:                 this,               uint64
+    Param:                value,               string
+    Attrb: Class.Property.Set(SpaceCenter.Vessel,Name)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+
+> Vessel_get_Type
+    Param:                 this,               uint64
+    Retrn:                int32
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Type)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Enum(SpaceCenter.VesselType)
+
+> Vessel_set_Type
+    Param:                 this,               uint64
+    Param:                value,                int32
+    Attrb: Class.Property.Set(SpaceCenter.Vessel,Type)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ParameterType(1).Enum(SpaceCenter.VesselType)
+
+> Vessel_get_Situation
+    Param:                 this,               uint64
+    Retrn:                int32
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Situation)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Enum(SpaceCenter.VesselSituation)
+
+> Vessel_get_MET
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,MET)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+
+> Vessel_get_Target
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Target)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.Vessel)
+
+> Vessel_set_Target
+    Param:                 this,               uint64
+    Param:                value,               uint64
+    Attrb: Class.Property.Set(SpaceCenter.Vessel,Target)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ParameterType(1).Class(SpaceCenter.Vessel)
+
+> Vessel_get_Orbit
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Orbit)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.Orbit)
+
+> Vessel_get_Control
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Control)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.Control)
+
+> Vessel_get_AutoPilot
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,AutoPilot)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.AutoPilot)
+
+> Vessel_get_Resources
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Resources)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.Resources)
+
+> Vessel_get_Comms
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Comms)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.Comms)
+
+> Vessel_get_Mass
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Mass)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+
+> Vessel_get_DryMass
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,DryMass)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+
+> Vessel_get_CrossSectionalArea
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,CrossSectionalArea)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+
+> Vessel_get_Thrust
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,Thrust)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+
+> Vessel_get_SpecificImpulse
+    Param:                 this,               uint64
+    Retrn:               double
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,SpecificImpulse)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+
+> Vessel_get_ReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,ReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> Vessel_get_OrbitalReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,OrbitalReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> Vessel_get_SurfaceReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,SurfaceReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+> Vessel_get_SurfaceVelocityReferenceFrame
+    Param:                 this,               uint64
+    Retrn:               uint64
+    Attrb: Class.Property.Get(SpaceCenter.Vessel,SurfaceVelocityReferenceFrame)
+    Attrb: ParameterType(0).Class(SpaceCenter.Vessel)
+    Attrb: ReturnType.Class(SpaceCenter.ReferenceFrame)
+
+=== CLASSES ====
+> AutoPilot
+> CelestialBody
+> Comms
+> Control
+> Flight
+> Node
+> Orbit
+> ReferenceFrame
+> Resources
+> Vessel
+
+==== ENUMS =====
+> VesselType
+    Ship           , 0
+    Station        , 1
+    Lander         , 2
+    Probe          , 3
+    Rover          , 4
+    Base           , 5
+    Debris         , 6
+
+> VesselSituation
+    Docked         , 0
+    Escaping       , 1
+    Flying         , 2
+    Landed         , 3
+    Orbiting       , 4
+    PreLaunch      , 5
+    Splashed       , 6
+    SubOrbital     , 7
+
+***
+*** Service: KRPC
+***
+== PROCEDURES ==
+> GetStatus
+    Retrn:          KRPC.Status
+
+> GetServices
+    Retrn:        KRPC.Services
+
+> AddStream
+    Param:              request,         KRPC.Request
+    Retrn:               uint32
+
+> RemoveStream
+    Param:                   id,               uint32
