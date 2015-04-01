@@ -14,6 +14,7 @@ BOOL knavTerminate = false;
 SHORT knavKeyState = 0;
 
 void print_usage();
+void add_trailing_slash(char **path);
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -48,6 +49,8 @@ int _tmain(int argc, _TCHAR* argv[])
     argNumChars = wcslen(argv[2]);
     outputPath = new char[argNumChars + 1];
     wcstombs_s(&numCharsConverted, outputPath, argNumChars + 1, argv[2], _TRUNCATE);
+
+    add_trailing_slash(&outputPath);
 
     // parse IP address, if provided
     if (argc > 3) {
@@ -135,8 +138,23 @@ void print_usage()
 {
   printf("Usage: \n\n");
 
-  printf("KRPCI_Interpreter.exe <service name> <output dir> [ip address] \n\n");
-  printf("<service name>       The name of kRPC service to query, e.g. SpaceCenter \n");
-  printf("<output dir>         Directory to place output files (include trailing slash) \n");
-  printf("[ip address]         Optional: IP address of kRPC host (defaults to localhost) \n\n");
+  printf("KRPCI_Interpreter.exe <service name> <output dir> [ip address]\n\n");
+  printf("<service name>       The name of kRPC service to query, e.g. SpaceCenter\n");
+  printf("<output dir>         Directory to place output files (trailing slash optional)\n");
+  printf("[ip address]         Optional: IP address of kRPC host (defaults to localhost)\n\n");
+}
+
+void add_trailing_slash(char **path)
+{
+  char *pathName = *path;
+  char *newPathName = NULL;
+  size_t pathNameLen = strlen(pathName);
+  if (pathName[pathNameLen - 1] != '\\') {
+    newPathName = new char[pathNameLen + 2]; // accomodate slash + null-char
+    _snprintf_s(newPathName, pathNameLen + 2, _TRUNCATE, "%s", pathName);
+    newPathName[pathNameLen] = '\\';
+    newPathName[pathNameLen + 1] = '\0';
+    delete pathName;
+    *path = newPathName;
+  }
 }
