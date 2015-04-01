@@ -43,6 +43,7 @@ void KNav_Telemetry::Update()
     activeVessel.vessel = KRPCI_SpaceCenter::get_ActiveVessel();
     activeVessel.name = KRPCI_SpaceCenter::Vessel_get_Name(activeVessel.vessel);
     activeVessel.autopilot = KRPCI_SpaceCenter::Vessel_get_AutoPilot(activeVessel.vessel);
+    activeVessel.vessel_ref = KRPCI_SpaceCenter::Vessel_get_ReferenceFrame(activeVessel.vessel);
     activeVessel.surface_ref = KRPCI_SpaceCenter::Vessel_get_SurfaceReferenceFrame(activeVessel.vessel);
     activeVessel.orbit = KRPCI_SpaceCenter::Vessel_get_Orbit(activeVessel.vessel);
     activeVessel.orbit_body = KRPCI_SpaceCenter::Orbit_get_Body(activeVessel.orbit);
