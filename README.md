@@ -9,13 +9,13 @@ KNav is a [kRPC](https://github.com/djungelorm/krpc)-compatible CLI client, writ
 Usage:
 
 ```
-> KNav.exe [ip address] [port]
+> KNav.exe [ip address]
 
 
     [ip address]              IP address of host running KSP with kRPC server plugin.
                               If unspecified, defaults to 127.0.0.1 (localhost)
                               
-    [port]                    port for the RPC server
+    Note: kRPC should run on port 50000
 ```
 
 KNav requires the kRPC server plugin for KSP. Compiling KNav requires the [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) library, kRPC's protocol buffer message definitions file (compiled for C++), and two libraries included in this repository:
@@ -40,11 +40,14 @@ types for that kRPC service.
 Usage:
 
 ```
-> KRPCI_Interpreter.exe <service name> <output dir>
+> KRPCI_Interpreter.exe <service name> <output dir> [ip address]
 
 
     <service name>            The name of kRPC service to query, e.g. SpaceCenter
-    <output dir>              Directory to place output files
+    <output dir>              Directory to place output files (trailing slash optional)
+    [ip address]              Optional: IP address of kRPC host (defaults to localhost)
+    
+    Note: kRPC should run on port 50000
 ```
 
 With this tool, changes made to the kRPC `SpaceCenter` service (or any other future services) on the plugin side can be 
