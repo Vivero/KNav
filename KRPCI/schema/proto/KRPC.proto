@@ -1,0 +1,90 @@
+package KRPC;
+
+message Request {
+  required string service = 1;
+  required string procedure = 2;
+  repeated Argument arguments = 3;
+}
+
+message Argument {
+  required uint32 position = 1;
+  required bytes value = 2;
+}
+
+message Response {
+  required double time = 1;
+  optional string error = 2;
+  optional bytes return_value = 3;
+}
+
+message StreamMessage {
+  repeated StreamResponse responses = 1;
+}
+
+message StreamResponse {
+  required uint32 id = 1;
+  required Response response = 2;
+}
+
+message Services {
+  repeated Service services = 1;
+}
+
+message Service {
+  required string name = 1;
+  repeated Procedure procedures = 2;
+  repeated Class classes = 3;
+  repeated Enumeration enumerations = 4;
+}
+
+message Procedure {
+  required string name = 1;
+  repeated Parameter parameters = 2;
+  optional string return_type = 3;
+  repeated string attributes = 4;
+}
+
+message Parameter {
+  required string name = 1;
+  required string type = 2;
+  optional bytes default_argument = 3;
+}
+
+message Class {
+  required string name = 1;
+}
+
+message Enumeration {
+  required string name = 1;
+  repeated EnumerationValue values = 2;
+}
+
+message EnumerationValue {
+  required string name = 1;
+  required int32 value = 2;
+}
+
+message List {
+  repeated bytes items = 1;
+}
+
+message Dictionary {
+  repeated DictionaryEntry entries = 1;
+}
+
+message DictionaryEntry {
+  required bytes key = 1;
+  required bytes value = 2;
+}
+
+message Set {
+  repeated bytes items = 1;
+}
+
+message Tuple {
+  repeated bytes items = 1;
+}
+
+message Status {
+  required string version = 1;
+}
