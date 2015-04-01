@@ -93,7 +93,7 @@ void KNav_Display::Display_Time()
   printf("KSP MET: ");
 
   SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-  printf("%11.3f", 0.0);
+  printf("%11.3f", knavTelemetry.activeVessel.mission_elapsed_time);
 
   SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
   printf(" ]");
@@ -144,10 +144,20 @@ void KNav_Display::Display_Program()
     SetConsoleTextAttribute(console, FOREGROUND_INTENSITY | BACKGROUND_RED);
   }
 
-  printf("%17s\n", flightStatus.c_str());
+  printf("%17s", flightStatus.c_str());
 
   SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
+  cursorPos.Y += 2;
+  SetConsoleCursorPosition(console, cursorPos);
+  printf(" %-17s : %17d", "executions", knavTelemetry.executionCount);
 
+  cursorPos.Y++;
+  SetConsoleCursorPosition(console, cursorPos);
+  printf(" %-17s : %17.1f", "avg exec time", knavTelemetry.avgExecutionTime_ms);
+
+  cursorPos.Y++;
+  SetConsoleCursorPosition(console, cursorPos);
+  printf(" %-17s : %17d", "cmd buffer size", knavTelemetry.commandBufferSize);
 }
 
 void KNav_Display::Display_Debug()

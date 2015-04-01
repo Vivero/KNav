@@ -10,6 +10,8 @@ knavTelemetry(telemetry)
 
 void KNav_Control::Control()
 {
+  static BOOL vectorsDrawn = FALSE;
+
   if (knavTelemetry.inFlight)
   {
     double altError = 12.0 - knavTelemetry.activeVessel.radarAltitude;
@@ -25,47 +27,52 @@ void KNav_Control::Control()
 
     /////
 
-    KRPC::Tuple direction = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
-    KRPC::Tuple color = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
-    float length = 10.0;
+    if (!vectorsDrawn)
+    {
+      KRPC::Tuple direction = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
+      KRPC::Tuple color = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
+      float length = 10.0;
 
-    // draw UP vector
-    commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
-    knavTelemetry.PushCommand(commandFn);
+      // draw UP vector
+      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
+      knavTelemetry.PushCommand(commandFn);
 
-    // draw NORTH vector
-    direction = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
-    color = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
-    commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
-    knavTelemetry.PushCommand(commandFn);
+      // draw NORTH vector
+      direction = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
+      color = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
+      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
+      knavTelemetry.PushCommand(commandFn);
 
-    // draw EAST vector
-    direction = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
-    color = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
-    commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
-    knavTelemetry.PushCommand(commandFn);
+      // draw EAST vector
+      direction = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
+      color = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
+      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
+      knavTelemetry.PushCommand(commandFn);
 
-    /////
+      /////
 
-    direction = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
-    color = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
-    length = 6.0;
+      direction = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
+      color = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
+      length = 6.0;
 
-    // draw STARBOARD vector
-    commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
-    knavTelemetry.PushCommand(commandFn);
+      // draw STARBOARD vector
+      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
+      knavTelemetry.PushCommand(commandFn);
 
-    // draw FORWARD vector
-    direction = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
-    color = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
-    commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
-    knavTelemetry.PushCommand(commandFn);
+      // draw FORWARD vector
+      direction = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
+      color = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
+      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
+      knavTelemetry.PushCommand(commandFn);
 
-    // draw ZENITH vector
-    direction = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
-    color = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
-    commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
-    knavTelemetry.PushCommand(commandFn);
+      // draw ZENITH vector
+      direction = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
+      color = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
+      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
+      knavTelemetry.PushCommand(commandFn);
+
+      vectorsDrawn = TRUE;
+    }
 
     /////
 

@@ -4,8 +4,12 @@ KNav_Telemetry::KNav_Telemetry() :
 kspUniversalTime(0.0),
 systemTime_ms(0),
 executionTime_ms(0),
+accExecutionTime_ms(0),
 sleepPeriod(0),
 inFlight(FALSE),
+avgExecutionTime_ms(0.0),
+executionCount(0),
+commandBufferSize(0),
 debugTimestamp(0.0)
 {
   commandListMutex = CreateMutex(
@@ -42,6 +46,7 @@ void KNav_Telemetry::Update()
   {
     activeVessel.vessel = KRPCI_SpaceCenter::get_ActiveVessel();
     activeVessel.name = KRPCI_SpaceCenter::Vessel_get_Name(activeVessel.vessel);
+    activeVessel.mission_elapsed_time = KRPCI_SpaceCenter::get_UT();
     activeVessel.autopilot = KRPCI_SpaceCenter::Vessel_get_AutoPilot(activeVessel.vessel);
     activeVessel.vessel_ref = KRPCI_SpaceCenter::Vessel_get_ReferenceFrame(activeVessel.vessel);
     activeVessel.surface_ref = KRPCI_SpaceCenter::Vessel_get_SurfaceReferenceFrame(activeVessel.vessel);
@@ -91,9 +96,13 @@ double KNav_Telemetry::Vessel_DistanceToBody(KRPCI_SpaceCenter::VESSEL vessel, K
 
 void KNav_Telemetry::Control()
 {
-  if (commandList.size() > 0) {
-    Command_t command;
-    BOOL retval = PopCommand(command);
+  commandBufferSize = commandList.size();
+  Command_t command;
+  BOOL retval = FALSE;
+
+  for (UINT i = 0; i < commandBufferSize; i++)
+  {
+    retval = PopCommand(command);
 
     if (retval) {
       try {
@@ -125,6 +134,7 @@ void KNav_Telemetry::rpcClientThread_run()
   // maintains a connection until terminated by the user.
   while (!rpcClientTerminate)
   {
+    systemTime_ms = GetTickCount64();
 
     // determine if we are in flight,
     // by trying to get KSP time
@@ -149,6 +159,10 @@ void KNav_Telemetry::rpcClientThread_run()
 
     // calculate sleep period
     executionTime_ms = GetTickCount64() - systemTime_ms;
+    accExecutionTime_ms += executionTime_ms;
+    executionCount++;
+    avgExecutionTime_ms = (double)accExecutionTime_ms / (double)executionCount;
+
     sleepPeriod = KNAV_TELEMETRY_SLEEP_PERIOD_MS - executionTime_ms;
     if (sleepPeriod > 0) {
       Sleep(sleepPeriod);
@@ -204,12 +218,12 @@ BOOL KNav_Telemetry::PopCommand(KNav_Telemetry::Command_t &cmd)
       cmd = commandList.front();
       commandList.pop_front();
 
-      if (sysTime < (cmd.timestamp + 500)) {
+      if (sysTime < (cmd.timestamp + 0.5)) {
         status = TRUE;
       }
       else {
-        _snprintf(errorMsg, 128, "WARNING: Late command (sys time = %.3f, arrived = %.3f) \n",
-          sysTime, cmd.timestamp);
+        _snprintf(errorMsg, 128, "WARNING: Late command discarded\n  sys time = %.3f\n  arrived  = %.3f\n  delta    = %.1fms) \n",
+          sysTime, cmd.timestamp, (sysTime - cmd.timestamp) * 1000.0);
         SetDebugMessage(string(errorMsg));
       }
 

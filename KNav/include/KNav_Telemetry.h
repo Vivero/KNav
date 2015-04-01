@@ -22,9 +22,9 @@ public:
   typedef struct VesselTelemetry {
     VesselTelemetry() : vessel(0), flight(0), control(0),
     situation(KRPCI_SpaceCenter::VesselSituation_PreLaunch), autopilot(0),
-    name(""), mass(0.0), dry_mass(0.0), vessel_ref(0),
-    surface_ref(0), orbit(0), orbit_body(0), orbit_body_ref(0),
-    orbit_body_mass(0.0), orbit_body_distance(0.0),
+    name(""), mass(0.0), dry_mass(0.0), mission_elapsed_time(0.0), 
+    vessel_ref(0), surface_ref(0), orbit(0), orbit_body(0), 
+    orbit_body_ref(0), orbit_body_mass(0.0), orbit_body_distance(0.0),
     verticalSpeed(0.0), radarAltitude(0.0), maxThrust(0.0),
     throttle(0.0), gravitationalForce(0.0) {}
 
@@ -36,6 +36,7 @@ public:
     std::string                        name;
     double                             mass;
     double                             dry_mass;
+    double                             mission_elapsed_time;
     KRPCI_SpaceCenter::REFERENCEFRAME  vessel_ref;
     KRPCI_SpaceCenter::REFERENCEFRAME  surface_ref;
     KRPCI_SpaceCenter::ORBIT           orbit;
@@ -73,6 +74,10 @@ public:
 
   void                PushCommand(std::function<void()> &controlFunction);
 
+  atomic<double>      avgExecutionTime_ms;
+  atomic<int>         executionCount;
+  atomic<int>         commandBufferSize;
+
 private:
 
   void Update();
@@ -96,7 +101,7 @@ private:
   void                rpcClientThread_run();
   HANDLE              rpcClientThread;
   atomic<bool>        rpcClientTerminate;
-  ULONGLONG           systemTime_ms, executionTime_ms;
+  ULONGLONG           systemTime_ms, executionTime_ms, accExecutionTime_ms;
   LONGLONG            sleepPeriod;
 };
 
