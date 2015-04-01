@@ -6,6 +6,8 @@ KNav is a [kRPC](https://github.com/djungelorm/krpc)-compatible CLI client, writ
 
 **Note:** *KNav is very new code. Support is limited at this point. Its only useful in-game capability right now is that it allows your craft to maintain a fixed-altitude hover. However, the underlying code should be useful for anyone looking to implement their own auto-pilot programming in C++.*
 
+See it in action [here](https://youtu.be/Y5JDC383600).
+
 Usage:
 
 ```
