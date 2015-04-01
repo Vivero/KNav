@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KRPCI", "KRPCI\KRPCI.vcxproj", "{4A519774-8501-45BB-B0FF-61915DEC1D01}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KRPCI_Interpreter", "KRPCI_Interpreter\KRPCI_Interpreter.vcxproj", "{1EDA3409-3B7E-4339-9ED8-F9F5E8A7B394}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KRPCI_SpaceCenter", "KRPCI_SpaceCenter\KRPCI_SpaceCenter.vcxproj", "{CAD9A452-9889-48B8-9F10-A5972461190E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4A519774-8501-45BB-B0FF-61915DEC1D01} = {4A519774-8501-45BB-B0FF-61915DEC1D01}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KNav", "KNav\KNav.vcxproj", "{0441B99E-AFE4-4AD9-A563-B07148736ECE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CAD9A452-9889-48B8-9F10-A5972461190E} = {CAD9A452-9889-48B8-9F10-A5972461190E}
+		{4A519774-8501-45BB-B0FF-61915DEC1D01} = {4A519774-8501-45BB-B0FF-61915DEC1D01}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A519774-8501-45BB-B0FF-61915DEC1D01}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A519774-8501-45BB-B0FF-61915DEC1D01}.Debug|Win32.Build.0 = Debug|Win32
+		{4A519774-8501-45BB-B0FF-61915DEC1D01}.Release|Win32.ActiveCfg = Release|Win32
+		{4A519774-8501-45BB-B0FF-61915DEC1D01}.Release|Win32.Build.0 = Release|Win32
+		{1EDA3409-3B7E-4339-9ED8-F9F5E8A7B394}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1EDA3409-3B7E-4339-9ED8-F9F5E8A7B394}.Debug|Win32.Build.0 = Debug|Win32
+		{1EDA3409-3B7E-4339-9ED8-F9F5E8A7B394}.Release|Win32.ActiveCfg = Release|Win32
+		{1EDA3409-3B7E-4339-9ED8-F9F5E8A7B394}.Release|Win32.Build.0 = Release|Win32
+		{CAD9A452-9889-48B8-9F10-A5972461190E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CAD9A452-9889-48B8-9F10-A5972461190E}.Debug|Win32.Build.0 = Debug|Win32
+		{CAD9A452-9889-48B8-9F10-A5972461190E}.Release|Win32.ActiveCfg = Release|Win32
+		{CAD9A452-9889-48B8-9F10-A5972461190E}.Release|Win32.Build.0 = Release|Win32
+		{0441B99E-AFE4-4AD9-A563-B07148736ECE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0441B99E-AFE4-4AD9-A563-B07148736ECE}.Debug|Win32.Build.0 = Debug|Win32
+		{0441B99E-AFE4-4AD9-A563-B07148736ECE}.Release|Win32.ActiveCfg = Release|Win32
+		{0441B99E-AFE4-4AD9-A563-B07148736ECE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
