@@ -1,13 +1,10 @@
 #include "KNav_Control.h"
 
-//using namespace std;
+using namespace std;
 
 KNav_Control::KNav_Control(KNav_Telemetry &telemetry) :
 knavTelemetry(telemetry),
-knavTelemetryThread(telemetry.GetThreadHandle())
-{
-  
-}
+knavTelemetryThread(telemetry.rpcClientThread) { }
 
 void KNav_Control::Control()
 {
@@ -77,12 +74,6 @@ void KNav_Control::Control()
 
     /////
 
-    /*knavTelemetry.asyncVectorXform.store
-    DWORD asyncRetval = QueueUserAPC(knavTelemetry.AsyncCommand, knavTelemetryThread, (ULONG_PTR)&knavTelemetry);
-    while ((asyncRetval != 0) && !knavTelemetry.asyncComplete);*/
-
-    /////
-
     double pitch = 90.0;
     double heading = 0.0;
     double roll = 0.0;
@@ -94,7 +85,7 @@ void KNav_Control::Control()
     commandFn = std::bind(KRPCI_SpaceCenter::AutoPilot_SetRotation, knavTelemetry.activeVessel.autopilot,
       pitch, heading, roll, knavTelemetry.activeVessel.surface_ref, wait);
 
-    //knavTelemetry.PushCommand(commandFn);
+    knavTelemetry.PushCommand(commandFn);
   }
 
 

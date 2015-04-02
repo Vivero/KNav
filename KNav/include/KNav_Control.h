@@ -14,9 +14,8 @@ public:
 
 private:
 
-
   KNav_Telemetry &knavTelemetry;
-  HANDLE         &knavTelemetryThread;
+  const HANDLE   &knavTelemetryThread;
 
 };
 

@@ -9,8 +9,19 @@
 
 class KNav_Telemetry
 {
+  /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
+  /*=%=%=%=%=%=%=%=%=%=%                                   %=%=%=%=%=%=%=%=%=%*/
+  /*=%=%=%=%=%=%=%=%=%=%  P U B L I C   I N T E R F A C E  %=%=%=%=%=%=%=%=%=%*/
+  /*=%=%=%=%=%=%=%=%=%=%                                   %=%=%=%=%=%=%=%=%=%*/
+  /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
 public:
 
+  //
+  //  TYPES
+  //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  // struct for general 3-value vector
+  //
   typedef struct Vector3d {
     Vector3d() : x(0.0), y(0.0), z(0.0) {}
 
@@ -19,6 +30,8 @@ public:
     double z;
   } Vector3d_t;
 
+  // struct to hold all vessel telemetry
+  //
   typedef struct VesselTelemetry {
     VesselTelemetry() : vessel(0), flight(0), control(0),
     situation(KRPCI_SpaceCenter::VesselSituation_PreLaunch), autopilot(0),
@@ -51,6 +64,8 @@ public:
     double                             gravitationalForce;
   } VesselTelemetry_t;
 
+  // struct for one-way commands to kRPC
+  //
   typedef struct Command {
     Command() : timestamp(0.0) {}
 
@@ -58,66 +73,140 @@ public:
     std::function<void()> controlFunction;
   } Command_t;
 
-  template<class output_t> struct AsyncCommand_t {
-    Command_t command;
-    output_t  output;
-    BOOL      complete;
+  // struct for asynchronous messaging with kRPC
+  //
+  template<class output_t> struct AsyncMessage {
+    std::function<output_t()> controlFunction;
+    output_t                  output;
+    BOOL                      complete;
   };
 
-  typedef AsyncCommand_t<KRPC::Tuple> AsyncCommandTuple_t;
+  // define message with Tuple return value
+  typedef AsyncMessage<KRPC::Tuple> AsyncMessageTuple_t;
 
+  //
+  //  METHODS
+  //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  // constructor/destructor
+  //
   KNav_Telemetry();
   ~KNav_Telemetry() {};
 
+  // entry point functions
+  //
   void Open();
   void Close();
 
-  VesselTelemetry_t   activeVessel;
-  double              kspUniversalTime;
-  double              kspGravConstant;
+  // debug
+  //
+  void GetDebugMessage(double &timestamp, std::string &msg);
 
-  void                GetDebugMessage(double &timestamp, std::string &msg);
+  // command buffering
+  //
+  void PushCommand(std::function<void()> &controlFunction);
 
-  BOOL                inFlight;
+  // async messaging
+  //
+  static VOID CALLBACK AsyncMessage(ULONG_PTR dwParam);
 
-  void                PushCommand(std::function<void()> &controlFunction);
 
-  atomic<double>      avgExecutionTime_ms;
-  atomic<int>         executionCount;
-  atomic<int>         commandBufferSize;
+  //
+  //  PUBLIC MEMBERS
+  //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  HANDLE&             GetThreadHandle();
+  AsyncMessageTuple_t asyncMessage;
 
-  static VOID CALLBACK AsyncCommand(ULONG_PTR dwParam);
-  atomic<int>         numAsyncCalls;
 
-  atomic<AsyncCommandTuple_t> asyncVectorXform;
+  //
+  //  READ-ONLY MEMBERS
+  //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+  // class info
+  const HANDLE             &rpcClientThread;
+
+  // vessel info
+  const VesselTelemetry_t  &activeVessel;
+  const BOOL               &inFlight;
+
+  // environment info
+  const double             &kspUniversalTime;
+  const double             &kspGravConstant;
+
+  // performance counters
+  const double             &avgExecutionTime_ms;
+  const UINT               &executionCount;
+  const UINT               &commandBufferSize;
+  const UINT               &numAsyncCalls;
+
+
+
+  /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
+  /*=%=%=%=%=%=%=%=%=%=%                                  =%=%=%=%=%=%=%=%=%=%*/
+  /*=%=%=%=%=%=%=%=%=%=%  P R I V A T E   M E M B E R S   =%=%=%=%=%=%=%=%=%=%*/
+  /*=%=%=%=%=%=%=%=%=%=%                                  =%=%=%=%=%=%=%=%=%=%*/
+  /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
 private:
 
-  void Update();
-  void Control();
+  void                 Update();
+  void                 Control();
 
-  // control structures
+  BOOL                 PopCommand(KNav_Telemetry::Command_t &cmd);
+
+  void                 SetDebugMessage(std::string &msg);
+
+  static DWORD WINAPI  rpcClientThread_stub(LPVOID lpParam);
+  void                 rpcClientThread_run();
+
+  Vector3d_t           Vessel_Position(
+                         KRPCI_SpaceCenter::VESSEL vessel, 
+                         KRPCI_SpaceCenter::REFERENCEFRAME referenceFrame);
+
+  double               Vessel_DistanceToBody(
+                         KRPCI_SpaceCenter::VESSEL Vessel, 
+                         KRPCI_SpaceCenter::REFERENCEFRAME referenceFrame);
+
+  // command buffer structures
   std::list<Command_t> commandList;
   HANDLE               commandListMutex;
-  BOOL                 PopCommand(KNav_Telemetry::Command_t &cmd);
   
+  // debug information
+  double               debugTimestamp;
+  std::string          debugMessage;
 
-  KNav_Telemetry::Vector3d_t Vessel_Position(KRPCI_SpaceCenter::VESSEL vessel, KRPCI_SpaceCenter::REFERENCEFRAME referenceFrame);
-  double                     Vessel_DistanceToBody(KRPCI_SpaceCenter::VESSEL Vessel, KRPCI_SpaceCenter::REFERENCEFRAME referenceFrame);
+  // class info
+  ULONGLONG            systemTime_ms;
 
-  double              debugTimestamp;
-  std::string         debugMessage;
-  void                SetDebugMessage(std::string &msg);
-
+  // performance counters
+  ULONGLONG            executionTime_ms;
+  ULONGLONG            accExecutionTime_ms;
+  
   // threading
-  static DWORD WINAPI rpcClientThread_stub(LPVOID lpParam);
-  void                rpcClientThread_run();
-  HANDLE              rpcClientThread;
-  atomic<bool>        rpcClientTerminate;
-  ULONGLONG           systemTime_ms, executionTime_ms, accExecutionTime_ms, elapsedTime_ms;
-  LONGLONG            sleepPeriod;
+  atomic<bool>         rpcClientTerminate;
+  ULONGLONG            elapsedTime_ms;
+  LONGLONG             sleepPeriod;
+
+
+
+  // private copies of read-only members
+  //----------------------------------------------------------------------------
+
+  // class info
+  HANDLE              _rpcClientThread;
+
+  // vessel info
+  VesselTelemetry_t   _activeVessel;
+  BOOL                _inFlight;
+
+  // environment info
+  double              _kspUniversalTime;
+  double              _kspGravConstant;
+
+  // performance counters
+  double              _avgExecutionTime_ms;
+  UINT                _executionCount;
+  UINT                _commandBufferSize;
+  UINT                _numAsyncCalls;
   
 };
 
