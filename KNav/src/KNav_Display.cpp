@@ -1,10 +1,11 @@
 #include "KNav_Display.h"
 
-KNav_Display::KNav_Display(HANDLE console, KNav_Telemetry &telemetry) :
+KNav_Display::KNav_Display(const HANDLE &con, KNav_Telemetry &telemetry) :
+knavTelemetry(telemetry),
+console(con),
 clearScreen(TRUE),
-knavTelemetry(telemetry)
+systemTime(0.0)
 {
-  this->console = console;
   VESSEL_SITUATION_K.push_back("DOCKED");
   VESSEL_SITUATION_K.push_back("ESCAPING");
   VESSEL_SITUATION_K.push_back("FLYING");
@@ -24,13 +25,17 @@ knavTelemetry(telemetry)
   Splashed       , 6
   SubOrbital     , 7
   */
+
+  // set screen size
+  COORD dwSize = { KNAV_DISPLAY_WIDTH, KNAV_DISPLAY_HEIGHT };
+  SetConsoleScreenBufferSize(console, dwSize);
 }
 
 void KNav_Display::Display()
 {
   // get current time
   ULONGLONG systemTime_ms = GetTickCount64();
-  systemTime = (double)systemTime_ms / 1000.0;
+  systemTime = (DOUBLE)systemTime_ms / 1000.0;
 
   // re-render whole screen
   if (clearScreen) {
@@ -66,13 +71,59 @@ void KNav_Display::Display()
 
   // reset attributes
   SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
-};
+}
+
+void KNav_Display::cls() {
+  // clear whole screen
+  clear(0, 0, KNAV_DISPLAY_WIDTH, KNAV_DISPLAY_HEIGHT);
+}
+
+void KNav_Display::cls_Debug() {
+  // clear debug screen
+  clear(KNAV_DISPLAY_DEBUG_X, KNAV_DISPLAY_DEBUG_Y, KNAV_DISPLAY_DEBUG_W, KNAV_DISPLAY_DEBUG_H);
+}
+
+void KNav_Display::clear(UINT x, UINT y, UINT w, UINT h)
+{
+  COORD                        coordScreen = { x, y };
+  DWORD                        dwConSize = w * h;
+  DWORD                        cCharsWritten = 0;
+  CONSOLE_SCREEN_BUFFER_INFO   csbi;
+
+  // fill portion with blanks
+  if (!FillConsoleOutputCharacter(
+    console,
+    (TCHAR) ' ',
+    dwConSize,
+    coordScreen,
+    &cCharsWritten)) {
+    return;
+  }
+
+  // get current text attribute
+  if (!GetConsoleScreenBufferInfo(console, &csbi)) {
+    return;
+  }
+
+  // set buffer's attributes accordingly
+  if (!FillConsoleOutputAttribute(
+    console,
+    csbi.wAttributes,
+    dwConSize,
+    coordScreen,
+    &cCharsWritten)) {
+    return;
+  }
+
+  // put cursor at home coords
+  SetConsoleCursorPosition(console, coordScreen);
+}
 
 void KNav_Display::Display_Time()
 {
   COORD cursorPos;
-  cursorPos.X = 0;
-  cursorPos.Y = KNAV_DISPLAY_TIME_Y_POS;
+  cursorPos.X = KNAV_DISPLAY_TIME_X;
+  cursorPos.Y = KNAV_DISPLAY_TIME_Y;
 
   SetConsoleCursorPosition(console, cursorPos);
   SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -102,8 +153,8 @@ void KNav_Display::Display_Time()
 void KNav_Display::Display_VesselInfo()
 {
   COORD cursorPos;
-  cursorPos.X = 0;
-  cursorPos.Y = KNAV_DISPLAY_VESSEL_Y_POS;
+  cursorPos.X = KNAV_DISPLAY_VESSEL_X;
+  cursorPos.Y = KNAV_DISPLAY_VESSEL_Y;
 
   SetConsoleCursorPosition(console, cursorPos);
   SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
@@ -123,8 +174,8 @@ void KNav_Display::Display_VesselInfo()
 void KNav_Display::Display_Program()
 {
   COORD cursorPos;
-  cursorPos.X = KNAV_DISPLAY_PROGRAM_X_POS;
-  cursorPos.Y = KNAV_DISPLAY_PROGRAM_Y_POS;
+  cursorPos.X = KNAV_DISPLAY_PROGRAM_X;
+  cursorPos.Y = KNAV_DISPLAY_PROGRAM_Y;
 
   SetConsoleCursorPosition(console, cursorPos);
   SetConsoleTextAttribute(console, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -167,8 +218,8 @@ void KNav_Display::Display_Program()
 void KNav_Display::Display_Debug()
 {
   COORD cursorPos;
-  cursorPos.X = 0;
-  cursorPos.Y = KNAV_DISPLAY_DEBUG_Y_POS;
+  cursorPos.X = KNAV_DISPLAY_DEBUG_X;
+  cursorPos.Y = KNAV_DISPLAY_DEBUG_Y;
 
   SetConsoleCursorPosition(console, cursorPos);
   SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -188,7 +239,7 @@ void KNav_Display::Display_Debug()
     printf("%s\n", debugMsg.c_str());
   }
   else {
-    cursorPos.Y = KNAV_DISPLAY_DEBUG_Y_POS + 1;
+    cursorPos.Y = KNAV_DISPLAY_DEBUG_Y + 1;
     SetConsoleCursorPosition(console, cursorPos);
 
     DWORD cCharsWritten;
@@ -206,44 +257,4 @@ void KNav_Display::Display_Debug()
   }
 }
 
-void KNav_Display::cls()
-{
-  COORD coordScreen = { 0, 0 };
-  DWORD cCharsWritten;
-  CONSOLE_SCREEN_BUFFER_INFO csbi;
-  DWORD dwConSize;
 
-  // get num chars in current buffer
-  if (!GetConsoleScreenBufferInfo(console, &csbi)) {
-    return;
-  }
-  dwConSize = csbi.dwSize.X * csbi.dwSize.Y;
-
-  // fill screen with blanks
-  if (!FillConsoleOutputCharacter(
-    console,
-    (TCHAR) ' ',
-    dwConSize,
-    coordScreen,
-    &cCharsWritten)) {
-    return;
-  }
-
-  // get current text attribute
-  if (!GetConsoleScreenBufferInfo(console, &csbi)) {
-    return;
-  }
-
-  // set buffer's attributes accordingly
-  if (!FillConsoleOutputAttribute(
-    console,
-    csbi.wAttributes,
-    dwConSize,
-    coordScreen,
-    &cCharsWritten)) {
-    return;
-  }
-
-  // put cursor at home coords
-  SetConsoleCursorPosition(console, coordScreen);
-}

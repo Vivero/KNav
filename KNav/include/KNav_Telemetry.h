@@ -95,27 +95,27 @@ public:
 
   // entry point functions
   //
-  void Open();
-  void Close();
+  void                      Open();
+  void                      Close();
 
   // debug
   //
-  void GetDebugMessage(double &timestamp, std::string &msg);
+  void                      GetDebugMessage(double &timestamp, std::string &msg);
 
   // command buffering
   //
-  void PushCommand(std::function<void()> &controlFunction);
+  void                      PushCommand(std::function<void()> &controlFunction);
 
   // async messaging
   //
-  static VOID CALLBACK AsyncMessage(ULONG_PTR dwParam);
+  static VOID CALLBACK      AsyncMessage(ULONG_PTR dwParam);
 
 
   //
   //  PUBLIC MEMBERS
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-  AsyncMessageTuple_t asyncMessage;
+  AsyncMessageTuple_t       asyncMessage;
 
 
   //
@@ -148,16 +148,30 @@ public:
   /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
 private:
 
+  //
+  //  METHODS
+  //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  // entry point functions
+  //
   void                 Update();
   void                 Control();
 
+  // command buffering
+  //
   BOOL                 PopCommand(KNav_Telemetry::Command_t &cmd);
 
+  // debug
+  //
   void                 SetDebugMessage(std::string &msg);
 
+  // threading
+  //
   static DWORD WINAPI  rpcClientThread_stub(LPVOID lpParam);
   void                 rpcClientThread_run();
 
+  // utility functions
+  //
   Vector3d_t           Vessel_Position(
                          KRPCI_SpaceCenter::VESSEL vessel, 
                          KRPCI_SpaceCenter::REFERENCEFRAME referenceFrame);
@@ -165,6 +179,11 @@ private:
   double               Vessel_DistanceToBody(
                          KRPCI_SpaceCenter::VESSEL Vessel, 
                          KRPCI_SpaceCenter::REFERENCEFRAME referenceFrame);
+
+
+  //
+  //  PRIVATE MEMBERS
+  //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
   // command buffer structures
   std::list<Command_t> commandList;

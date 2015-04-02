@@ -8,14 +8,13 @@ knavTelemetryThread(telemetry.rpcClientThread) { }
 
 void KNav_Control::Control()
 {
-  static BOOL vectorsDrawn = FALSE;
-
+  // perform controls only if in flight
   if (knavTelemetry.inFlight)
   {
     ///// throttle control
 
-    double altError = 9.0 - knavTelemetry.activeVessel.radarAltitude;
-    double throttleCmd = knavTelemetry.activeVessel.mass *
+    DOUBLE altError = 9.0 - knavTelemetry.activeVessel.radarAltitude;
+    DOUBLE throttleCmd = knavTelemetry.activeVessel.mass *
       (knavTelemetry.activeVessel.gravitationalForce - knavTelemetry.activeVessel.verticalSpeed + altError) /
       knavTelemetry.activeVessel.maxThrust;
 
@@ -24,71 +23,6 @@ void KNav_Control::Control()
     function<void()> commandFn = std::bind(KRPCI_SpaceCenter::Control_set_Throttle, knavTelemetry.activeVessel.control, throttleCmd);
 
     knavTelemetry.PushCommand(commandFn);
-
-    ///// draw vectors
-
-    if (!vectorsDrawn)
-    {
-      KRPC::Tuple direction = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
-      KRPC::Tuple color = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
-      float length = 10.0;
-
-      // draw UP vector
-      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
-      knavTelemetry.PushCommand(commandFn);
-
-      // draw NORTH vector
-      direction = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
-      color = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
-      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
-      knavTelemetry.PushCommand(commandFn);
-
-      // draw EAST vector
-      direction = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
-      color = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
-      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.surface_ref, color, length);
-      knavTelemetry.PushCommand(commandFn);
-
-      /////
-
-      direction = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
-      color = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
-      length = 6.0;
-
-      // draw STARBOARD vector
-      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
-      knavTelemetry.PushCommand(commandFn);
-
-      // draw FORWARD vector
-      direction = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
-      color = KRPCI::GenerateTuple(0.0, 1.0, 0.0);
-      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
-      knavTelemetry.PushCommand(commandFn);
-
-      // draw ZENITH vector
-      direction = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
-      color = KRPCI::GenerateTuple(0.0, 0.0, 1.0);
-      commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, direction, knavTelemetry.activeVessel.vessel_ref, color, length);
-      knavTelemetry.PushCommand(commandFn);
-
-      vectorsDrawn = TRUE;
-    }
-
-    ///// direction control
-
-    double pitch = 90.0;
-    double heading = 0.0;
-    double roll = 0.0;
-    bool wait = false;
-
-    //commandFn = std::bind(KRPCI_SpaceCenter::AutoPilot_SetDirection, knavTelemetry.activeVessel.autopilot, 
-    //  direction, roll, knavTelemetry.activeVessel.surface_ref, wait);
-
-    commandFn = std::bind(KRPCI_SpaceCenter::AutoPilot_SetRotation, knavTelemetry.activeVessel.autopilot,
-      pitch, heading, roll, knavTelemetry.activeVessel.surface_ref, wait);
-
-    //knavTelemetry.PushCommand(commandFn);
   }
-
 
 }
