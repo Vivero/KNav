@@ -5,11 +5,14 @@ kspUniversalTime(0.0),
 systemTime_ms(0),
 executionTime_ms(0),
 accExecutionTime_ms(0),
+elapsedTime_ms(0),
 sleepPeriod(0),
 inFlight(FALSE),
 avgExecutionTime_ms(0.0),
 executionCount(0),
 commandBufferSize(0),
+asyncComplete(FALSE),
+numAsyncCalls(0),
 debugTimestamp(0.0)
 {
   commandListMutex = CreateMutex(
@@ -46,7 +49,7 @@ void KNav_Telemetry::Update()
   {
     activeVessel.vessel = KRPCI_SpaceCenter::get_ActiveVessel();
     activeVessel.name = KRPCI_SpaceCenter::Vessel_get_Name(activeVessel.vessel);
-    activeVessel.mission_elapsed_time = KRPCI_SpaceCenter::get_UT();
+    activeVessel.mission_elapsed_time = KRPCI_SpaceCenter::Vessel_get_MET(activeVessel.vessel);
     activeVessel.autopilot = KRPCI_SpaceCenter::Vessel_get_AutoPilot(activeVessel.vessel);
     activeVessel.vessel_ref = KRPCI_SpaceCenter::Vessel_get_ReferenceFrame(activeVessel.vessel);
     activeVessel.surface_ref = KRPCI_SpaceCenter::Vessel_get_SurfaceReferenceFrame(activeVessel.vessel);
@@ -157,16 +160,21 @@ void KNav_Telemetry::rpcClientThread_run()
       activeVessel = VesselTelemetry_t();
     }
 
-    // calculate sleep period
+    // calculate loop execution time
     executionTime_ms = GetTickCount64() - systemTime_ms;
     accExecutionTime_ms += executionTime_ms;
     executionCount++;
     avgExecutionTime_ms = (double)accExecutionTime_ms / (double)executionCount;
+    elapsedTime_ms = executionTime_ms;
 
-    sleepPeriod = KNAV_TELEMETRY_SLEEP_PERIOD_MS - executionTime_ms;
-    if (sleepPeriod > 0) {
-      Sleep(sleepPeriod);
-    }
+    do {
+      // calculate sleep period
+      sleepPeriod = KNAV_TELEMETRY_SLEEP_PERIOD_MS - elapsedTime_ms;
+      if (sleepPeriod > 0) {
+        SleepEx(sleepPeriod, TRUE);
+      }
+      elapsedTime_ms = GetTickCount64() - systemTime_ms;
+    } while (elapsedTime_ms <= KNAV_TELEMETRY_SLEEP_PERIOD_MS);
   }
 }
 
@@ -222,7 +230,7 @@ BOOL KNav_Telemetry::PopCommand(KNav_Telemetry::Command_t &cmd)
         status = TRUE;
       }
       else {
-        _snprintf(errorMsg, 128, "WARNING: Late command discarded\n  sys time = %.3f\n  arrived  = %.3f\n  delta    = %.1fms) \n",
+        _snprintf(errorMsg, 128, "WARNING: Late command discarded\n  sys time = %.3f\n  arrived  = %.3f\n  delta    = %.1fms \n",
           sysTime, cmd.timestamp, (sysTime - cmd.timestamp) * 1000.0);
         SetDebugMessage(string(errorMsg));
       }
@@ -235,4 +243,16 @@ BOOL KNav_Telemetry::PopCommand(KNav_Telemetry::Command_t &cmd)
   }
 
   return status;
+}
+
+HANDLE& KNav_Telemetry::GetThreadHandle() {
+  return rpcClientThread;
+}
+
+VOID CALLBACK KNav_Telemetry::AsyncCommand(ULONG_PTR dwParam)
+{
+  KNav_Telemetry *telemetry = (KNav_Telemetry *)dwParam;
+  //telemetry->SetDebugMessage(string("Async Command Running!"));
+  telemetry->numAsyncCalls++;
+  telemetry->asyncComplete = TRUE;
 }

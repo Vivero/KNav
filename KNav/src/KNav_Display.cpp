@@ -153,6 +153,10 @@ void KNav_Display::Display_Program()
 
   cursorPos.Y++;
   SetConsoleCursorPosition(console, cursorPos);
+  printf(" %-17s : %17d", "async calls", knavTelemetry.numAsyncCalls);
+
+  cursorPos.Y++;
+  SetConsoleCursorPosition(console, cursorPos);
   printf(" %-17s : %17.1f", "avg exec time", knavTelemetry.avgExecutionTime_ms);
 
   cursorPos.Y++;

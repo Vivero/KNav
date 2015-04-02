@@ -58,6 +58,14 @@ public:
     std::function<void()> controlFunction;
   } Command_t;
 
+  template<class output_t> struct AsyncCommand_t {
+    Command_t command;
+    output_t  output;
+    BOOL      complete;
+  };
+
+  typedef AsyncCommand_t<KRPC::Tuple> AsyncCommandTuple_t;
+
   KNav_Telemetry();
   ~KNav_Telemetry() {};
 
@@ -78,6 +86,13 @@ public:
   atomic<int>         executionCount;
   atomic<int>         commandBufferSize;
 
+  HANDLE&             GetThreadHandle();
+
+  static VOID CALLBACK AsyncCommand(ULONG_PTR dwParam);
+  atomic<int>         numAsyncCalls;
+
+  atomic<AsyncCommandTuple_t> asyncVectorXform;
+
 private:
 
   void Update();
@@ -92,17 +107,18 @@ private:
   KNav_Telemetry::Vector3d_t Vessel_Position(KRPCI_SpaceCenter::VESSEL vessel, KRPCI_SpaceCenter::REFERENCEFRAME referenceFrame);
   double                     Vessel_DistanceToBody(KRPCI_SpaceCenter::VESSEL Vessel, KRPCI_SpaceCenter::REFERENCEFRAME referenceFrame);
 
-  double       debugTimestamp;
-  std::string  debugMessage;
-  void         SetDebugMessage(std::string &msg);
+  double              debugTimestamp;
+  std::string         debugMessage;
+  void                SetDebugMessage(std::string &msg);
 
   // threading
   static DWORD WINAPI rpcClientThread_stub(LPVOID lpParam);
   void                rpcClientThread_run();
   HANDLE              rpcClientThread;
   atomic<bool>        rpcClientTerminate;
-  ULONGLONG           systemTime_ms, executionTime_ms, accExecutionTime_ms;
+  ULONGLONG           systemTime_ms, executionTime_ms, accExecutionTime_ms, elapsedTime_ms;
   LONGLONG            sleepPeriod;
+  
 };
 
 #endif // KNAV_TELEMETRY_H

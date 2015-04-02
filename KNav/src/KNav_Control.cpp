@@ -3,7 +3,8 @@
 //using namespace std;
 
 KNav_Control::KNav_Control(KNav_Telemetry &telemetry) :
-knavTelemetry(telemetry)
+knavTelemetry(telemetry),
+knavTelemetryThread(telemetry.GetThreadHandle())
 {
   
 }
@@ -73,6 +74,12 @@ void KNav_Control::Control()
 
       vectorsDrawn = TRUE;
     }
+
+    /////
+
+    /*knavTelemetry.asyncVectorXform.store
+    DWORD asyncRetval = QueueUserAPC(knavTelemetry.AsyncCommand, knavTelemetryThread, (ULONG_PTR)&knavTelemetry);
+    while ((asyncRetval != 0) && !knavTelemetry.asyncComplete);*/
 
     /////
 
