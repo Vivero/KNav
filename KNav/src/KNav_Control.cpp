@@ -12,7 +12,9 @@ void KNav_Control::Control()
 
   if (knavTelemetry.inFlight)
   {
-    double altError = 12.0 - knavTelemetry.activeVessel.radarAltitude;
+    ///// throttle control
+
+    double altError = 9.0 - knavTelemetry.activeVessel.radarAltitude;
     double throttleCmd = knavTelemetry.activeVessel.mass *
       (knavTelemetry.activeVessel.gravitationalForce - knavTelemetry.activeVessel.verticalSpeed + altError) /
       knavTelemetry.activeVessel.maxThrust;
@@ -23,7 +25,7 @@ void KNav_Control::Control()
 
     knavTelemetry.PushCommand(commandFn);
 
-    /////
+    ///// draw vectors
 
     if (!vectorsDrawn)
     {
@@ -72,7 +74,7 @@ void KNav_Control::Control()
       vectorsDrawn = TRUE;
     }
 
-    /////
+    ///// direction control
 
     double pitch = 90.0;
     double heading = 0.0;
@@ -85,7 +87,7 @@ void KNav_Control::Control()
     commandFn = std::bind(KRPCI_SpaceCenter::AutoPilot_SetRotation, knavTelemetry.activeVessel.autopilot,
       pitch, heading, roll, knavTelemetry.activeVessel.surface_ref, wait);
 
-    knavTelemetry.PushCommand(commandFn);
+    //knavTelemetry.PushCommand(commandFn);
   }
 
 
