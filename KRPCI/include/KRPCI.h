@@ -65,6 +65,7 @@ public:
   static void DecodeVarint(UINT64 &value, BYTE *buf, INT size);
 
   static KRPC::Tuple GenerateTuple(double x, double y, double z);
+  static void        UnpackTuple(KRPC::Tuple &tuple, double &x, double &y, double &z);
 
   atomic<bool> rpcServerIsConnected;
 

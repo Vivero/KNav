@@ -34,6 +34,7 @@ public:
   //
   typedef struct VesselTelemetry {
     VesselTelemetry() : vessel(0), flight(0), control(0),
+    vessel_direction(), control_pitch(0.0),
     situation(KRPCI_SpaceCenter::VesselSituation_PreLaunch), autopilot(0),
     name(""), mass(0.0), dry_mass(0.0), mission_elapsed_time(0.0), 
     vessel_ref(0), surface_ref(0), orbit(0), orbit_body(0), 
@@ -42,8 +43,10 @@ public:
     throttle(0.0), gravitationalForce(0.0) {}
 
     KRPCI_SpaceCenter::VESSEL          vessel;
+    Vector3d_t                         vessel_direction;
     KRPCI_SpaceCenter::FLIGHT          flight;
     KRPCI_SpaceCenter::CONTROL         control;
+    double                             control_pitch;
     KRPCI_SpaceCenter::VesselSituation situation;
     KRPCI_SpaceCenter::AUTOPILOT       autopilot;
     std::string                        name;
@@ -102,6 +105,7 @@ public:
   //
   void                      GetDebugMessage(double &timestamp, std::string &msg);
   void                      SetDebugMessage(std::string &msg);
+  void                      SetDebugMessage(const char *msg);
 
   // command buffering
   //

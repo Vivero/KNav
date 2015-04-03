@@ -773,3 +773,14 @@ KRPC::Tuple KRPCI::GenerateTuple(double x, double y, double z)
 
   return tuple;
 }
+
+void KRPCI::UnpackTuple(KRPC::Tuple &tuple, double &x, double &y, double &z)
+{
+  const string &x_str = tuple.items(0);
+  const string &y_str = tuple.items(1);
+  const string &z_str = tuple.items(2);
+
+  CopyMemory(&x, x_str.data(), x_str.size());
+  CopyMemory(&y, y_str.data(), y_str.size());
+  CopyMemory(&z, z_str.data(), z_str.size());
+}

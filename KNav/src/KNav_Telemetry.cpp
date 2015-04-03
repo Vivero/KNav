@@ -82,11 +82,15 @@ void KNav_Telemetry::Update()
     _activeVessel.mass = KRPCI_SpaceCenter::Vessel_get_Mass(activeVessel.vessel);
 
     _activeVessel.control = KRPCI_SpaceCenter::Vessel_get_Control(activeVessel.vessel);
+    _activeVessel.control_pitch = KRPCI_SpaceCenter::Control_get_Pitch(_activeVessel.control);
     _activeVessel.throttle = KRPCI_SpaceCenter::Control_get_Throttle(activeVessel.control);
 
     _kspGravConstant = KRPCI_SpaceCenter::get_G();
     _activeVessel.gravitationalForce = (activeVessel.orbit_body_mass * kspGravConstant) /
       (activeVessel.orbit_body_distance * activeVessel.orbit_body_distance);
+
+    KRPC::Tuple vessel_direction = KRPCI_SpaceCenter::Vessel_Direction(_activeVessel.vessel, _activeVessel.surface_ref);
+    KRPCI::UnpackTuple(vessel_direction, _activeVessel.vessel_direction.x, _activeVessel.vessel_direction.y, _activeVessel.vessel_direction.z);
   }
   catch (KRPC_Exception &e)
   {
@@ -200,6 +204,11 @@ void KNav_Telemetry::GetDebugMessage(double &timestamp, std::string &msg) {
 void KNav_Telemetry::SetDebugMessage(std::string &msg) {
   debugTimestamp = (double)GetTickCount64() / 1000.0;
   debugMessage = msg;
+}
+
+void KNav_Telemetry::SetDebugMessage(const char *msg) {
+  string msg_str(msg);
+  SetDebugMessage(msg_str);
 }
 
 void KNav_Telemetry::PushCommand(std::function<void()> &controlFunction)

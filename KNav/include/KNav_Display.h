@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "KNav_Telemetry.h"
+#include "KNav_Control.h"
 
 /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
 /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=                 %=%=%=%=%=%=%=%=%=%=%=%=%=%=%=*/
@@ -64,26 +65,44 @@ public:
   //
   typedef struct UserInput {
     UserInput() : up(FALSE), down(FALSE), left(FALSE), right(FALSE),
+    enter(FALSE), clear(FALSE), key0(FALSE), key1(FALSE), key3(FALSE),
+    key5(FALSE), key7(FALSE), key9(FALSE),
     latched(FALSE) { }
 
     BOOL operator==(const UserInput &rhs) {
       return !(up ^ rhs.up) && !(down ^ rhs.down) && 
-        !(left ^ rhs.left) && !(right ^ rhs.right);
+        !(left ^ rhs.left) && !(right ^ rhs.right) &&
+        !(enter ^ rhs.enter) && !(clear ^ rhs.clear) &&
+        !(key0 ^ rhs.key0) && !(key1 ^ rhs.key1) && 
+        !(key3 ^ rhs.key3) && !(key5 ^ rhs.key5) && 
+        !(key7 ^ rhs.key7) && !(key9 ^ rhs.key9);
     };
     BOOL operator!=(const UserInput &rhs) {
       return !operator==(rhs);
     };
     void copy(const UserInput &rhs) {
       up = rhs.up; down = rhs.down; left = rhs.left; right = rhs.right;
+      enter = rhs.enter; clear = rhs.clear; key0 = rhs.key0; key1 = rhs.key1;
+      key3 = rhs.key3; key5 = rhs.key5; key7 = rhs.key7; key9 = rhs.key9;
     };
     BOOL pressed() {
-      return up || down || left || right;
+      return up || down || left || right ||
+        enter || clear || key0 || key1 || key3 || 
+        key5 || key7 || key9;
     };
 
     BOOL up;
     BOOL down;
     BOOL left;
     BOOL right;
+    BOOL enter;
+    BOOL clear;
+    BOOL key0;
+    BOOL key1;
+    BOOL key3;
+    BOOL key5;
+    BOOL key7;
+    BOOL key9;
 
     BOOL latched;
   } UserInput_t;
@@ -95,7 +114,7 @@ public:
 
   // constructor/destructor
   //
-  KNav_Display(const HANDLE &con, KNav_Telemetry &telemetry);
+  KNav_Display(const HANDLE &con, KNav_Telemetry &telemetry, KNav_Control &control);
   ~KNav_Display() {};
 
   // entry point functions
@@ -134,6 +153,8 @@ private:
   void   cls_Debug();
   void   clear(UINT x, UINT y, UINT w, UINT h);
 
+  void   ProgramSelectionIndex_Increment();
+  void   ProgramSelectionIndex_Decrement();
 
   //
   //  PRIVATE MEMBERS
@@ -141,6 +162,7 @@ private:
 
   // external object handles
   KNav_Telemetry &knavTelemetry;
+  KNav_Control   &knavControl;
   const HANDLE   &console;
 
   // class info
@@ -150,6 +172,10 @@ private:
   UserInput_t     userInput;
   HANDLE          userInputMutex;
   string          prevDebugMsg;
+
+  // program selection
+  UINT            programSelectionIndex;
+  UINT            programActiveIndex;
 
 };
 

@@ -17,6 +17,23 @@ public:
   //  TYPES
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
+  // programs
+  //
+  enum ProgramID_t {
+    NONE = 0,
+    HOVER = 1,
+    ASCENT = 2,
+    EMERGENCY = 3
+  };
+
+  typedef struct ControlProgram {
+    ControlProgram() : id(NONE), name("") {}
+    ControlProgram(ProgramID_t id, string name) : id(id), name(name) {}
+
+    ProgramID_t id;
+    string      name;
+  } ControlProgram_t;
+
 
   //
   //  METHODS
@@ -32,12 +49,34 @@ public:
   void Control();
 
 
+  //
+  //  PUBLIC FIELDS
+  //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  // program list
+  vector<ControlProgram_t> programList;
+  atomic<ProgramID_t>      programActiveIndex;
+
+  // control variables
+  atomic<double>           controlHover_altitude;
+
+
   /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
   /*=%=%=%=%=%=%=%=%=%=%                                  =%=%=%=%=%=%=%=%=%=%*/
   /*=%=%=%=%=%=%=%=%=%=%  P R I V A T E   M E M B E R S   =%=%=%=%=%=%=%=%=%=%*/
   /*=%=%=%=%=%=%=%=%=%=%                                  =%=%=%=%=%=%=%=%=%=%*/
   /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
 private:
+
+  //
+  //  METHODS
+  //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+  // control programs
+  //
+  void Control_Hover();
+  void Control_Emergency();
+
 
   //
   //  PRIVATE MEMBERS

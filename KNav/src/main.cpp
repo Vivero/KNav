@@ -9,7 +9,7 @@
 
 using namespace std;
 
-#define KNAV_SLEEP_PERIOD 100
+#define KNAV_SLEEP_PERIOD 80
 
 BOOL knavTerminate = FALSE;
 ULONGLONG systemTime_ms = 0, executionTime_ms = 0;
@@ -35,7 +35,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // setup Display
   hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-  KNav_Display knavDisplay(hStdout, knavTelemetry);
+  KNav_Display knavDisplay(hStdout, knavTelemetry, knavControl);
   KNav_Display::UserInput_t &userInput = knavDisplay.GetUserInput();
   BOOL userInputLocked = FALSE;
 
@@ -64,7 +64,7 @@ int _tmain(int argc, _TCHAR* argv[])
     systemTime_ms = GetTickCount64();
 
     // get user input
-    knavKeyState_Lshift = GetAsyncKeyState(VK_LSHIFT);
+    knavKeyState_Lshift = GetAsyncKeyState(VK_TAB);
     if (knavKeyState_Lshift & 0x8000)
     {
       // terminate if ESC is pressed
@@ -80,10 +80,18 @@ int _tmain(int argc, _TCHAR* argv[])
         userInputLocked = knavDisplay.LockUserInput();
 
         if (userInputLocked) {
-          userInput.up = (GetAsyncKeyState(VK_UP) & 0x8000);
-          userInput.down = (GetAsyncKeyState(VK_DOWN) & 0x8000);
-          userInput.left = (GetAsyncKeyState(VK_LEFT) & 0x8000);
-          userInput.right = (GetAsyncKeyState(VK_RIGHT) & 0x8000);
+          userInput.up = (GetAsyncKeyState(VK_NUMPAD8) & 0x8000);
+          userInput.down = (GetAsyncKeyState(VK_NUMPAD2) & 0x8000);
+          userInput.left = (GetAsyncKeyState(VK_NUMPAD4) & 0x8000);
+          userInput.right = (GetAsyncKeyState(VK_NUMPAD6) & 0x8000);
+          userInput.enter = (GetAsyncKeyState(VK_ADD) & 0x8000);
+          userInput.clear = (GetAsyncKeyState(VK_SUBTRACT) & 0x8000);
+          userInput.key0 = (GetAsyncKeyState(VK_NUMPAD0) & 0x8000);
+          userInput.key1 = (GetAsyncKeyState(VK_NUMPAD1) & 0x8000);
+          userInput.key3 = (GetAsyncKeyState(VK_NUMPAD3) & 0x8000);
+          userInput.key5 = (GetAsyncKeyState(VK_NUMPAD5) & 0x8000);
+          userInput.key7 = (GetAsyncKeyState(VK_NUMPAD7) & 0x8000);
+          userInput.key9 = (GetAsyncKeyState(VK_NUMPAD9) & 0x8000);
 
           if (prevInput != userInput) {
             userInput.latched = TRUE;

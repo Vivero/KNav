@@ -1,12 +1,15 @@
 #include "KNav_Display.h"
 
-KNav_Display::KNav_Display(const HANDLE &con, KNav_Telemetry &telemetry) :
+KNav_Display::KNav_Display(const HANDLE &con, KNav_Telemetry &telemetry, KNav_Control &control) :
 knavTelemetry(telemetry),
+knavControl(control),
 console(con),
 clearScreen(TRUE),
 systemTime(0.0),
 userInputMutex(NULL),
-prevDebugMsg("")
+prevDebugMsg(""),
+programSelectionIndex(0),
+programActiveIndex(0)
 {
   VESSEL_SITUATION_K.push_back("DOCKED");
   VESSEL_SITUATION_K.push_back("ESCAPING");
@@ -57,13 +60,32 @@ void KNav_Display::Display()
     // process single-presses
     if (userInput.latched) {
 
-#ifdef KNAV_DISPLAY_DEBUG
+
       if (userInput.up) {
         msg = "Pressed UP";
+        ProgramSelectionIndex_Decrement();
       }
-      if (userInput.down) {
+      else if (userInput.down) {
         msg = "Pressed DOWN";
+        ProgramSelectionIndex_Increment();
       }
+      else if (userInput.enter) {
+        programActiveIndex = programSelectionIndex;
+        knavControl.programActiveIndex = (KNav_Control::ProgramID_t)programActiveIndex;
+      }
+
+      if (userInput.key0) {
+        programSelectionIndex = (UINT)KNav_Control::EMERGENCY;
+        programActiveIndex = (UINT)KNav_Control::EMERGENCY;
+        knavControl.programActiveIndex = KNav_Control::EMERGENCY;
+      }
+      else if(userInput.key7) {
+        knavControl.controlHover_altitude = knavControl.controlHover_altitude + 1.0;
+      }
+      else if (userInput.key1) {
+        knavControl.controlHover_altitude = knavControl.controlHover_altitude - 1.0;
+      }
+
       if (userInput.left) {
         msg = "Pressed LEFT";
       }
@@ -71,9 +93,11 @@ void KNav_Display::Display()
         msg = "Pressed RIGHT";
       }
 
-      if (userInput.pressed())
+      if (userInput.pressed()) {
+#ifdef KNAV_DISPLAY_DEBUG
         knavTelemetry.SetDebugMessage(msg);
 #endif
+      }
 
 
       userInput.latched = FALSE;
@@ -194,6 +218,18 @@ void KNav_Display::clear(UINT x, UINT y, UINT w, UINT h)
   SetConsoleCursorPosition(console, coordScreen);
 }
 
+void KNav_Display::ProgramSelectionIndex_Increment() {
+  UINT numPrograms = knavControl.programList.size();
+  programSelectionIndex++;
+  programSelectionIndex = (programSelectionIndex < numPrograms) ? programSelectionIndex : 0;
+}
+
+void KNav_Display::ProgramSelectionIndex_Decrement() {
+  UINT numPrograms = knavControl.programList.size();
+  LONG num = (LONG)programSelectionIndex - 1;
+  programSelectionIndex = (num < 0) ? (numPrograms - 1) : (UINT)num;
+}
+
 void KNav_Display::Display_Time()
 {
   COORD cursorPos;
@@ -244,6 +280,10 @@ void KNav_Display::Display_VesselInfo()
   printf(" %-17s : %17.0f\n", "thrust", knavTelemetry.activeVessel.maxThrust * knavTelemetry.activeVessel.throttle);
   printf("\n");
   printf(" %-17s : %17.1f\n", "radar altitude", knavTelemetry.activeVessel.radarAltitude);
+  printf("\n");
+  printf(" %-17s : %17.3f\n", "pitch", knavTelemetry.activeVessel.vessel_direction.x);
+  printf(" %-17s : %17.3f\n", "heading", knavTelemetry.activeVessel.vessel_direction.y);
+  printf(" %-17s : %17.3f\n", "roll", knavTelemetry.activeVessel.vessel_direction.z);
 }
 
 void KNav_Display::Display_Program()
@@ -288,6 +328,10 @@ void KNav_Display::Display_Program()
   cursorPos.Y++;
   SetConsoleCursorPosition(console, cursorPos);
   printf(" %-17s : %17d", "cmd buffer size", knavTelemetry.commandBufferSize);
+
+  cursorPos.Y += 2;
+  SetConsoleCursorPosition(console, cursorPos);
+  printf(" %-17s : %17.1f", "hover altitude", knavControl.controlHover_altitude);
 }
 
 void KNav_Display::Display_Select()
@@ -299,6 +343,29 @@ void KNav_Display::Display_Select()
   SetConsoleCursorPosition(console, cursorPos);
   SetConsoleTextAttribute(console, FOREGROUND_RED);
   printf("[------------------------------   S E L E C T   ------------------------------]\n");
+
+  cursorPos.X += 2;
+  cursorPos.Y += 2;
+
+  UINT numPrograms = knavControl.programList.size();
+  WORD textAttrDefault = FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY;
+  for (UINT i = 0; i < numPrograms; i++)
+  {
+    // set cursor and color
+    WORD textAttr = textAttrDefault;
+    SetConsoleCursorPosition(console, cursorPos);
+    if (i == programActiveIndex) {
+      textAttr = textAttr & (~FOREGROUND_GREEN); // subtract green
+    }
+    if (i == programSelectionIndex) {
+      textAttr = textAttr << 4;
+    }
+    SetConsoleTextAttribute(console, textAttr);
+
+    printf("%s", knavControl.programList.at(i).name.c_str());
+
+    cursorPos.Y++;
+  }
 }
 
 void KNav_Display::Display_Debug()
