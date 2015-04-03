@@ -101,6 +101,7 @@ public:
   // debug
   //
   void                      GetDebugMessage(double &timestamp, std::string &msg);
+  void                      SetDebugMessage(std::string &msg);
 
   // command buffering
   //
@@ -160,10 +161,6 @@ private:
   // command buffering
   //
   BOOL                 PopCommand(KNav_Telemetry::Command_t &cmd);
-
-  // debug
-  //
-  void                 SetDebugMessage(std::string &msg);
 
   // threading
   //

@@ -36,7 +36,7 @@ _numAsyncCalls(0)
     L"commandList");   // mutex name
 
   if (commandListMutex == NULL) {
-    printf("WARNING: Failed to create mutex controlList");
+    printf("WARNING: Failed to create mutex commandListMutex");
   }
 }
 

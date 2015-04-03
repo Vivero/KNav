@@ -4,7 +4,9 @@ KNav_Display::KNav_Display(const HANDLE &con, KNav_Telemetry &telemetry) :
 knavTelemetry(telemetry),
 console(con),
 clearScreen(TRUE),
-systemTime(0.0)
+systemTime(0.0),
+userInputMutex(NULL),
+prevDebugMsg("")
 {
   VESSEL_SITUATION_K.push_back("DOCKED");
   VESSEL_SITUATION_K.push_back("ESCAPING");
@@ -29,6 +31,16 @@ systemTime(0.0)
   // set screen size
   COORD dwSize = { KNAV_DISPLAY_WIDTH, KNAV_DISPLAY_HEIGHT };
   SetConsoleScreenBufferSize(console, dwSize);
+
+  // create user input mutex
+  userInputMutex = CreateMutex(
+    NULL,              // default security attributes
+    FALSE,             // initially not owned
+    L"userInput");     // mutex name
+
+  if (userInputMutex == NULL) {
+    printf("WARNING: Failed to create mutex userInputMutex");
+  }
 }
 
 void KNav_Display::Display()
@@ -36,6 +48,38 @@ void KNav_Display::Display()
   // get current time
   ULONGLONG systemTime_ms = GetTickCount64();
   systemTime = (DOUBLE)systemTime_ms / 1000.0;
+
+  // process user input
+  if (LockUserInput()) {
+
+    string msg;
+
+    // process single-presses
+    if (userInput.latched) {
+      if (userInput.up) {
+        msg = "Pressed UP";
+      }
+      if (userInput.down) {
+        msg = "Pressed DOWN";
+      }
+      if (userInput.left) {
+        msg = "Pressed LEFT";
+      }
+      if (userInput.right) {
+        msg = "Pressed RIGHT";
+      }
+
+      if (userInput.pressed())
+        knavTelemetry.SetDebugMessage(msg);
+
+
+      userInput.latched = FALSE;
+    }
+
+    // process continuous input
+
+    UnlockUserInput();
+  }
 
   // re-render whole screen
   if (clearScreen) {
@@ -66,11 +110,28 @@ void KNav_Display::Display()
   // show Program info
   Display_Program();
 
+  // show Selection info
+  Display_Select();
+
   // show debug info
   Display_Debug();
 
   // reset attributes
   SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+}
+
+KNav_Display::UserInput_t& KNav_Display::GetUserInput() {
+  return userInput;
+}
+BOOL KNav_Display::LockUserInput() {
+  DWORD dwWaitResult = WaitForSingleObject(
+    userInputMutex,    // handle to mutex
+    100);              // time-out interval (ms)
+  return (dwWaitResult == WAIT_OBJECT_0);
+}
+
+void KNav_Display::UnlockUserInput() {
+  ReleaseMutex(userInputMutex);
 }
 
 void KNav_Display::cls() {
@@ -79,8 +140,19 @@ void KNav_Display::cls() {
 }
 
 void KNav_Display::cls_Debug() {
+  CONSOLE_SCREEN_BUFFER_INFO   csbi;
+  UINT                         clearHeight = 0;
+
+  // get current screen dims
+  if (!GetConsoleScreenBufferInfo(console, &csbi)) {
+    clearHeight = KNAV_DISPLAY_DEBUG_H - KNAV_DISPLAY_DEBUG_Y - 1;
+  }
+  else {
+    clearHeight = csbi.dwSize.Y;
+  }
+
   // clear debug screen
-  clear(KNAV_DISPLAY_DEBUG_X, KNAV_DISPLAY_DEBUG_Y, KNAV_DISPLAY_DEBUG_W, KNAV_DISPLAY_DEBUG_H);
+  clear(KNAV_DISPLAY_DEBUG_X, KNAV_DISPLAY_DEBUG_Y + 1, KNAV_DISPLAY_DEBUG_W, clearHeight);
 }
 
 void KNav_Display::clear(UINT x, UINT y, UINT w, UINT h)
@@ -215,6 +287,17 @@ void KNav_Display::Display_Program()
   printf(" %-17s : %17d", "cmd buffer size", knavTelemetry.commandBufferSize);
 }
 
+void KNav_Display::Display_Select()
+{
+  COORD cursorPos;
+  cursorPos.X = KNAV_DISPLAY_SELECT_X;
+  cursorPos.Y = KNAV_DISPLAY_SELECT_Y;
+
+  SetConsoleCursorPosition(console, cursorPos);
+  SetConsoleTextAttribute(console, FOREGROUND_RED);
+  printf("[------------------------------   S E L E C T   ------------------------------]\n");
+}
+
 void KNav_Display::Display_Debug()
 {
   COORD cursorPos;
@@ -232,29 +315,19 @@ void KNav_Display::Display_Debug()
   knavTelemetry.GetDebugMessage(debugTime, debugMsg);
 
   // display message if it is recent
-  if (systemTime < (debugTime + KNAV_DISPLAY_DEBUG_TIMEOUT_S)) {
+  if ((systemTime < (debugTime + KNAV_DISPLAY_DEBUG_TIMEOUT_S)) &&
+    (prevDebugMsg.compare(debugMsg) == 0)) 
+  {
     SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
     printf("%.3f\n\n", debugTime);
 
     printf("%s\n", debugMsg.c_str());
   }
   else {
-    cursorPos.Y = KNAV_DISPLAY_DEBUG_Y + 1;
-    SetConsoleCursorPosition(console, cursorPos);
-
-    DWORD cCharsWritten;
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    DWORD dwConSize;
-
-    GetConsoleScreenBufferInfo(console, &csbi);
-    dwConSize = csbi.dwSize.X * (csbi.dwSize.Y - cursorPos.Y);
-    FillConsoleOutputCharacter(
-      console,
-      (TCHAR) ' ',
-      dwConSize,
-      cursorPos,
-      &cCharsWritten);
+    cls_Debug();
   }
+
+  prevDebugMsg.assign(debugMsg);
 }
 
 

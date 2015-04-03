@@ -12,7 +12,6 @@ using namespace std;
 #define KNAV_SLEEP_PERIOD 100
 
 BOOL knavTerminate = FALSE;
-SHORT knavKeyState1 = 0, knavKeyState2 = 0;
 ULONGLONG systemTime_ms = 0, executionTime_ms = 0;
 LONGLONG  sleepPeriod = 0;
 ULONG execCounts = 0;
@@ -30,9 +29,15 @@ int _tmain(int argc, _TCHAR* argv[])
   // setup Flight Controller
   KNav_Control knavControl(knavTelemetry);
 
+  // setup user input struct
+  KNav_Display::UserInput_t  prevInput;
+  SHORT knavKeyState_Lshift = 0, knavKeyState = 0;
+
   // setup Display
   hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
   KNav_Display knavDisplay(hStdout, knavTelemetry);
+  KNav_Display::UserInput_t &userInput = knavDisplay.GetUserInput();
+  BOOL userInputLocked = FALSE;
 
   cout << endl << "Boot up sequence ... " << endl;
 
@@ -59,14 +64,40 @@ int _tmain(int argc, _TCHAR* argv[])
     systemTime_ms = GetTickCount64();
 
     // get user input
+    knavKeyState_Lshift = GetAsyncKeyState(VK_LSHIFT);
+    if (knavKeyState_Lshift & 0x8000)
+    {
+      // terminate if ESC is pressed
+      knavKeyState = GetAsyncKeyState(VK_ESCAPE);
+      if (knavKeyState & 0x8000) {
+        printf("KNav terminated by user! \n");
+        knavTerminate = TRUE;
+        break;
+      }
+
+      // process other user input keys
+      else {
+        userInputLocked = knavDisplay.LockUserInput();
+
+        if (userInputLocked) {
+          userInput.up = (GetAsyncKeyState(VK_UP) & 0x8000);
+          userInput.down = (GetAsyncKeyState(VK_DOWN) & 0x8000);
+          userInput.left = (GetAsyncKeyState(VK_LEFT) & 0x8000);
+          userInput.right = (GetAsyncKeyState(VK_RIGHT) & 0x8000);
+
+          if (prevInput != userInput) {
+            userInput.latched = TRUE;
+          }
+
+          prevInput.copy(userInput);
+          knavDisplay.UnlockUserInput();
+        } // userInputLocked
+      } // escape pressed
+    } // shift pressed
+
+    
     //knavKeyState = GetAsyncKeyState(0x51); // Q key
-    knavKeyState1 = GetAsyncKeyState(VK_LSHIFT);
-    knavKeyState2 = GetAsyncKeyState(VK_ESCAPE);
-    if ((knavKeyState1 & 0x8000) && (knavKeyState2 & 0x8000)) {
-      printf("KNav terminated by user! \n");
-      knavTerminate = TRUE;
-      break;
-    }
+    
 
     // render display
     knavDisplay.Display();
