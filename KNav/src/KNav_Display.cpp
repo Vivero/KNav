@@ -56,6 +56,8 @@ void KNav_Display::Display()
 
     // process single-presses
     if (userInput.latched) {
+
+#ifdef KNAV_DISPLAY_DEBUG
       if (userInput.up) {
         msg = "Pressed UP";
       }
@@ -71,6 +73,7 @@ void KNav_Display::Display()
 
       if (userInput.pressed())
         knavTelemetry.SetDebugMessage(msg);
+#endif
 
 
       userInput.latched = FALSE;
