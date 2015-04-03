@@ -66,14 +66,14 @@ void KNav_Telemetry::Update()
     _activeVessel.name = KRPCI_SpaceCenter::Vessel_get_Name(activeVessel.vessel);
     _activeVessel.mission_elapsed_time = KRPCI_SpaceCenter::Vessel_get_MET(activeVessel.vessel);
     _activeVessel.autopilot = KRPCI_SpaceCenter::Vessel_get_AutoPilot(activeVessel.vessel);
-    _activeVessel.vessel_ref = KRPCI_SpaceCenter::Vessel_get_ReferenceFrame(activeVessel.vessel);
-    _activeVessel.surface_ref = KRPCI_SpaceCenter::Vessel_get_SurfaceReferenceFrame(activeVessel.vessel);
     _activeVessel.orbit = KRPCI_SpaceCenter::Vessel_get_Orbit(activeVessel.vessel);
     _activeVessel.orbit_body = KRPCI_SpaceCenter::Orbit_get_Body(activeVessel.orbit);
-    _activeVessel.orbit_body_ref = KRPCI_SpaceCenter::CelestialBody_get_ReferenceFrame(activeVessel.orbit_body);
+    _activeVessel.reference_vessel = KRPCI_SpaceCenter::Vessel_get_ReferenceFrame(activeVessel.vessel);
+    _activeVessel.reference_surface = KRPCI_SpaceCenter::Vessel_get_SurfaceReferenceFrame(activeVessel.vessel);
+    _activeVessel.reference_orbit_body = KRPCI_SpaceCenter::CelestialBody_get_ReferenceFrame(activeVessel.orbit_body);
     _activeVessel.orbit_body_mass = KRPCI_SpaceCenter::CelestialBody_get_Mass(activeVessel.orbit_body);
-    _activeVessel.orbit_body_distance = Vessel_DistanceToBody(activeVessel.vessel, activeVessel.orbit_body_ref);
-    _activeVessel.flight = KRPCI_SpaceCenter::Vessel_Flight(activeVessel.vessel, activeVessel.orbit_body_ref);
+    _activeVessel.orbit_body_distance = Vessel_DistanceToBody(activeVessel.vessel, activeVessel.reference_orbit_body);
+    _activeVessel.flight = KRPCI_SpaceCenter::Vessel_Flight(activeVessel.vessel, activeVessel.reference_orbit_body);
     _activeVessel.situation = (KRPCI_SpaceCenter::VesselSituation)KRPCI_SpaceCenter::Vessel_get_Situation(activeVessel.vessel);
 
     _activeVessel.verticalSpeed = KRPCI_SpaceCenter::Flight_get_VerticalSpeed(activeVessel.flight);
@@ -89,7 +89,7 @@ void KNav_Telemetry::Update()
     _activeVessel.gravitationalForce = (activeVessel.orbit_body_mass * kspGravConstant) /
       (activeVessel.orbit_body_distance * activeVessel.orbit_body_distance);
 
-    KRPC::Tuple vessel_direction = KRPCI_SpaceCenter::Vessel_Direction(_activeVessel.vessel, _activeVessel.surface_ref);
+    KRPC::Tuple vessel_direction = KRPCI_SpaceCenter::Vessel_Direction(_activeVessel.vessel, _activeVessel.reference_surface);
     KRPCI::UnpackTuple(vessel_direction, _activeVessel.vessel_direction.x, _activeVessel.vessel_direction.y, _activeVessel.vessel_direction.z);
   }
   catch (KRPC_Exception &e)

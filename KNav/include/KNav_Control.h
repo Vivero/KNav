@@ -86,6 +86,10 @@ private:
   KNav_Telemetry &knavTelemetry;
   const HANDLE   &knavTelemetryThread;
 
+  // class members
+  double          deltaTime;
+  ULONGLONG       prevSystemTime_ms;
+
 };
 
 #endif // KNAV_CONTROL_H

@@ -37,10 +37,10 @@ public:
     vessel_direction(), control_pitch(0.0),
     situation(KRPCI_SpaceCenter::VesselSituation_PreLaunch), autopilot(0),
     name(""), mass(0.0), dry_mass(0.0), mission_elapsed_time(0.0), 
-    vessel_ref(0), surface_ref(0), orbit(0), orbit_body(0), 
-    orbit_body_ref(0), orbit_body_mass(0.0), orbit_body_distance(0.0),
+    orbit(0), orbit_body(0), orbit_body_mass(0.0), orbit_body_distance(0.0),
     verticalSpeed(0.0), radarAltitude(0.0), maxThrust(0.0),
-    throttle(0.0), gravitationalForce(0.0) {}
+    throttle(0.0), gravitationalForce(0.0), reference_vessel(0), 
+    reference_surface(0), reference_orbit_body(0) {}
 
     KRPCI_SpaceCenter::VESSEL          vessel;
     Vector3d_t                         vessel_direction;
@@ -53,11 +53,8 @@ public:
     double                             mass;
     double                             dry_mass;
     double                             mission_elapsed_time;
-    KRPCI_SpaceCenter::REFERENCEFRAME  vessel_ref;
-    KRPCI_SpaceCenter::REFERENCEFRAME  surface_ref;
     KRPCI_SpaceCenter::ORBIT           orbit;
     KRPCI_SpaceCenter::CELESTIALBODY   orbit_body;
-    KRPCI_SpaceCenter::REFERENCEFRAME  orbit_body_ref;
     double                             orbit_body_mass;
     double                             orbit_body_distance;
     double                             verticalSpeed;
@@ -65,6 +62,9 @@ public:
     double                             maxThrust;
     double                             throttle;
     double                             gravitationalForce;
+    KRPCI_SpaceCenter::REFERENCEFRAME  reference_vessel;
+    KRPCI_SpaceCenter::REFERENCEFRAME  reference_surface;
+    KRPCI_SpaceCenter::REFERENCEFRAME  reference_orbit_body;
   } VesselTelemetry_t;
 
   // struct for one-way commands to kRPC
