@@ -78,12 +78,13 @@ void KNav_Display::Display()
         programSelectionIndex = (UINT)KNav_Control::EMERGENCY;
         programActiveIndex = (UINT)KNav_Control::EMERGENCY;
         knavControl.programActiveIndex = KNav_Control::EMERGENCY;
+        knavControl.reference = 0.0;
       }
       else if(userInput.key7) {
-        knavControl.controlHover_altitude = knavControl.controlHover_altitude + 1.0;
+        knavControl.reference = knavControl.reference + 0.1;
       }
       else if (userInput.key1) {
-        knavControl.controlHover_altitude = knavControl.controlHover_altitude - 1.0;
+        knavControl.reference = knavControl.reference - 0.1;
       }
 
       if (userInput.left) {
@@ -278,12 +279,9 @@ void KNav_Display::Display_VesselInfo()
   printf(" %-17s : %17.0f\n", "mass", knavTelemetry.activeVessel.mass);
   printf(" %-17s : %17.0f\n", "weight", knavTelemetry.activeVessel.mass * knavTelemetry.activeVessel.gravitationalForce);
   printf(" %-17s : %17.0f\n", "thrust", knavTelemetry.activeVessel.maxThrust * knavTelemetry.activeVessel.throttle);
-  printf("\n");
+  printf(" %-17s : %17.0f\n", "max thrust", knavTelemetry.activeVessel.maxThrust);
   printf(" %-17s : %17.1f\n", "radar altitude", knavTelemetry.activeVessel.radarAltitude);
-  printf("\n");
-  printf(" %-17s : %17.3f\n", "pitch", knavTelemetry.activeVessel.vessel_direction.x);
-  printf(" %-17s : %17.3f\n", "heading", knavTelemetry.activeVessel.vessel_direction.y);
-  printf(" %-17s : %17.3f\n", "roll", knavTelemetry.activeVessel.vessel_direction.z);
+  printf(" %-17s : %17.1f\n", "v. speed", knavTelemetry.activeVessel.verticalSpeed);
 }
 
 void KNav_Display::Display_Program()
@@ -331,7 +329,11 @@ void KNav_Display::Display_Program()
 
   cursorPos.Y += 2;
   SetConsoleCursorPosition(console, cursorPos);
-  printf(" %-17s : %17.1f", "hover altitude", knavControl.controlHover_altitude);
+  printf(" %-17s : %17.1f", "reference", knavControl.reference);
+
+  cursorPos.Y++;
+  SetConsoleCursorPosition(console, cursorPos);
+  printf(" %-17s : %17.1f", "vspeed ref", knavControl.ref_vspeed);
 }
 
 void KNav_Display::Display_Select()
@@ -341,7 +343,7 @@ void KNav_Display::Display_Select()
   cursorPos.Y = KNAV_DISPLAY_SELECT_Y;
 
   SetConsoleCursorPosition(console, cursorPos);
-  SetConsoleTextAttribute(console, FOREGROUND_RED);
+  SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
   printf("[------------------------------   S E L E C T   ------------------------------]\n");
 
   cursorPos.X += 2;

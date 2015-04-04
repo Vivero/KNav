@@ -30,6 +30,9 @@
     <ClInclude Include="include\KNav_Control.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\KNav_PID.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\stdafx.cpp">
@@ -45,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\KNav_Control.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KNav_PID.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

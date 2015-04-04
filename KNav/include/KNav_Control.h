@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "KNav_Telemetry.h"
+#include "KNav_PID.h"
 
 class KNav_Control
 {
@@ -58,7 +59,8 @@ public:
   atomic<ProgramID_t>      programActiveIndex;
 
   // control variables
-  atomic<double>           controlHover_altitude;
+  atomic<double>           reference;
+  atomic<double>           ref_vspeed;
 
 
   /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/
@@ -89,6 +91,10 @@ private:
   // class members
   double          deltaTime;
   ULONGLONG       prevSystemTime_ms;
+
+  // control fields
+  KNav_PID        PID_vspeed;
+  KNav_PID        PID_altitude;
 
 };
 

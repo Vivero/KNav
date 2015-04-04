@@ -6,9 +6,12 @@ KNav_Control::KNav_Control(KNav_Telemetry &telemetry) :
 knavTelemetry(telemetry),
 knavTelemetryThread(telemetry.rpcClientThread),
 programActiveIndex(NONE),
-controlHover_altitude(50.0),
+reference(5.0),
 deltaTime(0.0),
-prevSystemTime_ms(GetTickCount64())
+prevSystemTime_ms(GetTickCount64()),
+PID_vspeed(telemetry.activeVessel.verticalSpeed, 0.0, 1.0, 0.1),
+PID_altitude(telemetry.activeVessel.radarAltitude, -0.5, 0.5, 0.1),
+ref_vspeed(0.0)
 {
   programList.emplace_back(NONE, "None");
   programList.emplace_back(HOVER, "Hover");
@@ -40,52 +43,49 @@ void KNav_Control::Control()
 
   }
 
+  else {
+    PID_vspeed.Reset();
+  }
+
   prevSystemTime_ms = systemTime_ms;
 }
 
 void KNav_Control::Control_Hover()
 {
+
+
   ///// throttle control
 
   double mass = knavTelemetry.activeVessel.mass;
   double grav = knavTelemetry.activeVessel.gravitationalForce;
   double maxT = knavTelemetry.activeVessel.maxThrust;
   double alt = knavTelemetry.activeVessel.radarAltitude;
+  double vspeed = knavTelemetry.activeVessel.verticalSpeed;
 
-  static double alt_prev = alt;
+  if (deltaTime <= 0.0 || maxT <= 0.0)
+    return;
 
-  double u_gain = mass * grav / maxT;
-  double p_osc = 8.0;
-  double p_gain = 0.6 * u_gain;
-  double i_gain = 2.0 * p_gain / p_osc;
-  double d_gain = p_gain * p_osc / 8.0;
-  double h = 0.1;
+  // altitude control
+  PID_altitude.Tosc = 1.0;
+  PID_altitude.Kp = deltaTime;
+  PID_altitude.Ki = 2.0 * PID_altitude.Kp / PID_altitude.Tosc;
+  PID_altitude.Kd = PID_altitude.Kp * PID_altitude.Tosc / 8.0 * 10.0;
+  ref_vspeed = PID_altitude.Control(deltaTime, reference);
 
-  static double throttle_cmd = 0.0;
-  static double throttle_sat = 0.0;
+  // thrust control
+  double u_gain = maxT / (mass * grav) * deltaTime;
+  PID_vspeed.Tosc = 1.0;
+  PID_vspeed.Kp = 0.06 * u_gain;
+  PID_vspeed.Ki = 2.0 * PID_vspeed.Kp / PID_vspeed.Tosc;
+  PID_vspeed.Kd = PID_vspeed.Kp * PID_vspeed.Tosc / 8.0;
 
-  static double i = 0.0;
-
-  static double d_prev = 0.0;
-
-  double altitude_error = controlHover_altitude - alt;
-  double p = p_gain * altitude_error;
-  i = i + i_gain * h * altitude_error + h / p_osc * (throttle_sat - throttle_cmd);
-  double d = p_osc / (p_osc + h) * d_prev - d_gain / (p_osc + h) * (alt - alt_prev);
-
-
-  /*DOUBLE throttleCmd = knavTelemetry.activeVessel.mass *
-    (knavTelemetry.activeVessel.gravitationalForce - knavTelemetry.activeVessel.verticalSpeed + altitude_error) /
-    knavTelemetry.activeVessel.maxThrust;*/
-
-  //throttle_cmd = mass * grav / maxT;
-
-  throttle_cmd = p + i + d;
-
-  throttle_sat = (throttle_cmd > 1.f) ? 1.f : ((throttle_cmd < 0.f) ? 0.f : throttle_cmd);
-
-  function<void()> commandFn = std::bind(KRPCI_SpaceCenter::Control_set_Throttle, knavTelemetry.activeVessel.control, throttle_sat);
+  float throttle_cmd = (float)PID_vspeed.Control(deltaTime, ref_vspeed);
+  function<void()> commandFn = std::bind(KRPCI_SpaceCenter::Control_set_Throttle, knavTelemetry.activeVessel.control, throttle_cmd);
   knavTelemetry.PushCommand(commandFn);
+
+
+
+
 
   ///// directional control
   BOOL flightControlsPressed = (GetAsyncKeyState('W') & 0x8000) || (GetAsyncKeyState('S') & 0x8000);
@@ -110,17 +110,17 @@ void KNav_Control::Control_Hover()
   ///// draw vectors
 
   commandFn = std::bind(KRPCI_SpaceCenter::ClearDirections);
-  knavTelemetry.PushCommand(commandFn);
+  //knavTelemetry.PushCommand(commandFn);
 
   KRPC::Tuple dir = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
   KRPC::Tuple col = KRPCI::GenerateTuple(1.0, 0.0, 0.0);
   float length = 10.0;
   commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, dir, knavTelemetry.activeVessel.reference_vessel, col, length);
-  knavTelemetry.PushCommand(commandFn);
+  //knavTelemetry.PushCommand(commandFn);
 
 
-  alt_prev = alt;
-  d_prev = d;
+  // clean up
+  //
 }
 
 void KNav_Control::Control_Emergency()
