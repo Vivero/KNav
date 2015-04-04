@@ -33,22 +33,23 @@ public:
   // struct to hold all vessel telemetry
   //
   typedef struct VesselTelemetry {
-    VesselTelemetry() : vessel(0), flight(0), control(0),
-    vessel_direction(), control_pitch(0.0),
-    situation(KRPCI_SpaceCenter::VesselSituation_PreLaunch), autopilot(0),
-    name(""), mass(0.0), dry_mass(0.0), mission_elapsed_time(0.0), 
-    orbit(0), orbit_body(0), orbit_body_mass(0.0), orbit_body_distance(0.0),
-    verticalSpeed(0.0), radarAltitude(0.0), maxThrust(0.0),
-    throttle(0.0), gravitationalForce(0.0), reference_vessel(0), 
+    VesselTelemetry() : vessel(0), vessel_direction(), resources(0), flight(0), 
+    control(0), control_pitch(0.0), situation(KRPCI_SpaceCenter::VesselSituation_PreLaunch),
+    autopilot(0), parts(0), name(""), mass(0.0), dry_mass(0.0),
+    mission_elapsed_time(0.0), orbit(0), orbit_body(0), orbit_body_mass(0.0),
+    orbit_body_distance(0.0), verticalSpeed(0.0), radarAltitude(0.0),
+    maxThrust(0.0), throttle(0.0), gravitationalForce(0.0), reference_vessel(0),
     reference_surface(0), reference_orbit_body(0) {}
 
     KRPCI_SpaceCenter::VESSEL          vessel;
     Vector3d_t                         vessel_direction;
+    KRPCI_SpaceCenter::VESSELRESOURCES resources;
     KRPCI_SpaceCenter::FLIGHT          flight;
     KRPCI_SpaceCenter::CONTROL         control;
     double                             control_pitch;
     KRPCI_SpaceCenter::VesselSituation situation;
     KRPCI_SpaceCenter::AUTOPILOT       autopilot;
+    KRPCI_SpaceCenter::PARTS           parts;
     std::string                        name;
     double                             mass;
     double                             dry_mass;
@@ -66,6 +67,13 @@ public:
     KRPCI_SpaceCenter::REFERENCEFRAME  reference_surface;
     KRPCI_SpaceCenter::REFERENCEFRAME  reference_orbit_body;
   } VesselTelemetry_t;
+
+  // struct to hold all parts
+  //
+  typedef struct VesselParts {
+    KRPCI_SpaceCenter::PART            rotatron1;
+    KRPCI_SpaceCenter::PART            rail1;
+  } VesselParts_t;
 
   // struct for one-way commands to kRPC
   //
@@ -132,6 +140,7 @@ public:
 
   // vessel info
   const VesselTelemetry_t  &activeVessel;
+  const VesselParts_t      &activeVesselParts;
   const BOOL               &inFlight;
 
   // environment info
@@ -216,6 +225,7 @@ private:
 
   // vessel info
   VesselTelemetry_t   _activeVessel;
+  VesselParts_t       _activeVesselParts;
   BOOL                _inFlight;
 
   // environment info

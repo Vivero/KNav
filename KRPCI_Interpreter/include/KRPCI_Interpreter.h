@@ -34,7 +34,10 @@ private:
   std::string FindClassType_Parameter(KRPC::Procedure &krpcProcedure, INT paramNumber, BOOL &isClassType);
   std::string FindClassType_Return(KRPC::Procedure &krpcProcedure);
   std::string TranslatePBtoCPP(std::string protobufType);
-  void CheckCPPType(std::string type, BOOL &isIntegral, BOOL &isFloatingPoint, BOOL &isBoolean, BOOL &is32bit, BOOL &is64bit, BOOL &isSigned);
+  void CheckCPPType(std::string type,
+    BOOL &isIntegral, BOOL &isFloatingPoint, BOOL &isBoolean,
+    BOOL &is32bit, BOOL &is64bit, BOOL &isSigned,
+    BOOL &isString);
 
   static std::string _toUpper(const std::string &in);
 

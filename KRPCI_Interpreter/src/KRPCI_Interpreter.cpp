@@ -340,9 +340,9 @@ std::string KRPCI_Interpreter::FunctionBody(KRPC::Procedure &krpcProcedure)
   bool hasReturnValue = (returnType.compare("void") != 0);
 
   // determine if primitive
-  BOOL isInt = false, isFloat = false, isBool = false;
-  BOOL is32b = false, is64b = false, isSigned = false;
-  CheckCPPType(returnType, isInt, isFloat, isBool, is32b, is64b, isSigned);
+  BOOL isInt = FALSE, isFloat = FALSE, isBool = FALSE;
+  BOOL is32b = FALSE, is64b = FALSE, isSigned = FALSE, isString = FALSE;
+  CheckCPPType(returnType, isInt, isFloat, isBool, is32b, is64b, isSigned, isString);
 
   // but also check if it was a ProtoBuf uint64
   if (krpcProcedure.return_type().compare("uint64") == 0) {
@@ -389,10 +389,10 @@ std::string KRPCI_Interpreter::FunctionBody(KRPC::Procedure &krpcProcedure)
       ss << "  arg" << i << "->set_value(" << paramName << ".SerializeAsString()); " << endl;
     } 
     else {
-      BOOL typeIsInt = false, typeIsFloat = false, typeIsBool = false;
-      BOOL typeIs32b = false, typeIs64b = false, typeIsSigned = false;
+      BOOL typeIsInt = FALSE, typeIsFloat = FALSE, typeIsBool = FALSE;
+      BOOL typeIs32b = FALSE, typeIs64b = FALSE, typeIsSigned = FALSE, typeIsString = FALSE;
       typeName = TranslatePBtoCPP(typeName);
-      CheckCPPType(typeName, typeIsInt, typeIsFloat, typeIsBool, typeIs32b, typeIs64b, typeIsSigned);
+      CheckCPPType(typeName, typeIsInt, typeIsFloat, typeIsBool, typeIs32b, typeIs64b, typeIsSigned, typeIsString);
       
       if (typeIsInt || typeIsBool) {
         if (typeIs32b) {
@@ -408,6 +408,9 @@ std::string KRPCI_Interpreter::FunctionBody(KRPC::Procedure &krpcProcedure)
         }
         ss << "  KRPCI::EncodeVarint(uint_arg" << i << ", uint_buf, uint_size);" << endl;
         ss << "  arg" << i << "->set_value((const char *)uint_buf, uint_size); " << endl;
+      }
+      else if (typeIsString) {
+        ss << "  arg" << i << "->set_value(KRPCI::EncodeString(" << (i + 1) << ", " << paramName << ")); " << endl;
       }
       else {
         ss << "  arg" << i << "->set_value((const char *)(&" << paramName << "), sizeof(" << paramName << ")); " << endl;
@@ -613,43 +616,48 @@ std::string KRPCI_Interpreter::TranslatePBtoCPP(std::string protobufType)
 
 void KRPCI_Interpreter::CheckCPPType(std::string type, 
   BOOL &isIntegral, BOOL &isFloatingPoint, BOOL &isBoolean, 
-  BOOL &is32bit,    BOOL &is64bit,         BOOL &isSigned)
+  BOOL &is32bit,    BOOL &is64bit,         BOOL &isSigned,
+  BOOL &isString)
 {
-  isIntegral = false;
-  isFloatingPoint = false;
-  isBoolean = false;
-  is32bit = false;
-  is64bit = false;
-  isSigned = false;
+  isIntegral = FALSE;
+  isFloatingPoint = FALSE;
+  isBoolean = FALSE;
+  is32bit = FALSE;
+  is64bit = FALSE;
+  isSigned = FALSE;
+  isString = FALSE;
 
   if (type.compare("UINT64") == 0) {
-    isIntegral = true;
-    is64bit = true;
+    isIntegral = TRUE;
+    is64bit = TRUE;
   }
   else if (type.compare("UINT32") == 0) {
-    isIntegral = true;
-    is32bit = true;
+    isIntegral = TRUE;
+    is32bit = TRUE;
   }
   else if (type.compare("INT64") == 0) {
-    isIntegral = true;
-    is64bit = true;
-    isSigned = true;
+    isIntegral = TRUE;
+    is64bit = TRUE;
+    isSigned = TRUE;
   }
   else if (type.compare("INT32") == 0) {
-    isIntegral = true;
-    is32bit = true;
-    isSigned = true;
+    isIntegral = TRUE;
+    is32bit = TRUE;
+    isSigned = TRUE;
   }
   else if (type.compare("float") == 0) {
-    isFloatingPoint = true;
-    is32bit = true;
+    isFloatingPoint = TRUE;
+    is32bit = TRUE;
   }
   else if (type.compare("double") == 0) {
-    isFloatingPoint = true;
-    is64bit = true;
+    isFloatingPoint = TRUE;
+    is64bit = TRUE;
   }
   else if (type.compare("bool") == 0) {
-    isBoolean = true;
+    isBoolean = TRUE;
+  }
+  else if (type.compare("string") == 0) {
+    isString = TRUE;
   }
 }
 

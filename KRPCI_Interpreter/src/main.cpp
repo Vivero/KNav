@@ -92,22 +92,26 @@ int _tmain(int argc, _TCHAR* argv[])
     printf("ERROR: could not find service \"%s\" while querying kRPC! \n", serviceName);
   }
   else {
+    stringstream ss;
+    ss << "KRPCI_" << serviceName_str;
+    serviceName_str = ss.str();
+
     KRPCI_Interpreter interpreter(krpcService, serviceName_str, krpcVersion);
 
-    stringstream ss;
 
     // header filename
-    ss << outputPath << serviceName << ".h";
+    ss.str(string());
+    ss << outputPath << serviceName_str << ".h";
     std::string genHeaderFilename = ss.str();
 
     // source filename
     ss.str(string());
-    ss << outputPath << serviceName << ".cpp";
+    ss << outputPath << serviceName_str << ".cpp";
     std::string genSourceFilename = ss.str();
 
     // summary filename
     ss.str(string());
-    ss << outputPath << serviceName << "_" << krpcVersion << ".txt";
+    ss << outputPath << serviceName_str << "_" << krpcVersion << ".txt";
     std::string genTxtFilename = ss.str();
 
     // output files

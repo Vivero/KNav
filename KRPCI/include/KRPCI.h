@@ -56,13 +56,15 @@ public:
   string GetKRPCServerVersion();
 
   // general util
-  static void PrintBytesHex(const char *buf, UINT size);
+  static void        PrintBytesHex(const char *buf, UINT size);
 
-  static void EncodeVarint(UINT32 value, BYTE *buf, INT &size);
-  static void EncodeVarint(UINT64 value, BYTE *buf, INT &size);
+  static string      EncodeString(UINT16 tagNum, string str);
 
-  static void DecodeVarint(UINT32 &value, BYTE *buf, INT size);
-  static void DecodeVarint(UINT64 &value, BYTE *buf, INT size);
+  static void        EncodeVarint(UINT32 value, BYTE *buf, INT &size);
+  static void        EncodeVarint(UINT64 value, BYTE *buf, INT &size);
+
+  static void        DecodeVarint(UINT32 &value, BYTE *buf, INT size);
+  static void        DecodeVarint(UINT64 &value, BYTE *buf, INT size);
 
   static KRPC::Tuple GenerateTuple(double x, double y, double z);
   static void        UnpackTuple(KRPC::Tuple &tuple, double &x, double &y, double &z);

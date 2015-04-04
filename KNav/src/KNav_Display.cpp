@@ -275,6 +275,7 @@ void KNav_Display::Display_VesselInfo()
   SetConsoleTextAttribute(console, FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
   printf(" %-17s : %17s\n", "vessel name", knavTelemetry.activeVessel.name.c_str());
   printf(" %-17s : %17d\n", "vessel id", knavTelemetry.activeVessel.vessel);
+  printf(" %-17s : %17d\n", "parts id", knavTelemetry.activeVessel.parts);
   printf("\n");
   printf(" %-17s : %17.0f\n", "mass", knavTelemetry.activeVessel.mass);
   printf(" %-17s : %17.0f\n", "weight", knavTelemetry.activeVessel.mass * knavTelemetry.activeVessel.gravitationalForce);

@@ -4,6 +4,7 @@ KNav_Telemetry::KNav_Telemetry() :
 // read-only fields
 rpcClientThread(_rpcClientThread),
 activeVessel(_activeVessel),
+activeVesselParts(_activeVesselParts),
 inFlight(_inFlight),
 kspUniversalTime(_kspUniversalTime),
 kspGravConstant(_kspGravConstant),
@@ -63,38 +64,64 @@ void KNav_Telemetry::Update()
   try
   {
     _activeVessel.vessel = KRPCI_SpaceCenter::get_ActiveVessel();
-    _activeVessel.name = KRPCI_SpaceCenter::Vessel_get_Name(activeVessel.vessel);
-    _activeVessel.mission_elapsed_time = KRPCI_SpaceCenter::Vessel_get_MET(activeVessel.vessel);
-    _activeVessel.autopilot = KRPCI_SpaceCenter::Vessel_get_AutoPilot(activeVessel.vessel);
-    _activeVessel.orbit = KRPCI_SpaceCenter::Vessel_get_Orbit(activeVessel.vessel);
-    _activeVessel.orbit_body = KRPCI_SpaceCenter::Orbit_get_Body(activeVessel.orbit);
-    _activeVessel.reference_vessel = KRPCI_SpaceCenter::Vessel_get_ReferenceFrame(activeVessel.vessel);
-    _activeVessel.reference_surface = KRPCI_SpaceCenter::Vessel_get_SurfaceReferenceFrame(activeVessel.vessel);
-    _activeVessel.reference_orbit_body = KRPCI_SpaceCenter::CelestialBody_get_ReferenceFrame(activeVessel.orbit_body);
-    _activeVessel.orbit_body_mass = KRPCI_SpaceCenter::CelestialBody_get_Mass(activeVessel.orbit_body);
-    _activeVessel.orbit_body_distance = Vessel_DistanceToBody(activeVessel.vessel, activeVessel.reference_orbit_body);
-    _activeVessel.flight = KRPCI_SpaceCenter::Vessel_Flight(activeVessel.vessel, activeVessel.reference_orbit_body);
-    _activeVessel.situation = (KRPCI_SpaceCenter::VesselSituation)KRPCI_SpaceCenter::Vessel_get_Situation(activeVessel.vessel);
+    _activeVessel.resources = KRPCI_SpaceCenter::Vessel_get_Resources(_activeVessel.vessel);
+    _activeVessel.name = KRPCI_SpaceCenter::Vessel_get_Name(_activeVessel.vessel);
+    _activeVessel.parts = KRPCI_SpaceCenter::Vessel_get_Parts(_activeVessel.vessel);
+    _activeVessel.mission_elapsed_time = KRPCI_SpaceCenter::Vessel_get_MET(_activeVessel.vessel);
+    _activeVessel.autopilot = KRPCI_SpaceCenter::Vessel_get_AutoPilot(_activeVessel.vessel);
+    _activeVessel.orbit = KRPCI_SpaceCenter::Vessel_get_Orbit(_activeVessel.vessel);
+    _activeVessel.orbit_body = KRPCI_SpaceCenter::Orbit_get_Body(_activeVessel.orbit);
+    _activeVessel.reference_vessel = KRPCI_SpaceCenter::Vessel_get_ReferenceFrame(_activeVessel.vessel);
+    _activeVessel.reference_surface = KRPCI_SpaceCenter::Vessel_get_SurfaceReferenceFrame(_activeVessel.vessel);
+    _activeVessel.reference_orbit_body = KRPCI_SpaceCenter::CelestialBody_get_ReferenceFrame(_activeVessel.orbit_body);
+    _activeVessel.orbit_body_mass = KRPCI_SpaceCenter::CelestialBody_get_Mass(_activeVessel.orbit_body);
+    _activeVessel.orbit_body_distance = Vessel_DistanceToBody(_activeVessel.vessel, _activeVessel.reference_orbit_body);
+    _activeVessel.flight = KRPCI_SpaceCenter::Vessel_Flight(_activeVessel.vessel, _activeVessel.reference_orbit_body);
+    _activeVessel.situation = (KRPCI_SpaceCenter::VesselSituation)KRPCI_SpaceCenter::Vessel_get_Situation(_activeVessel.vessel);
 
-    _activeVessel.verticalSpeed = KRPCI_SpaceCenter::Flight_get_VerticalSpeed(activeVessel.flight);
-    _activeVessel.radarAltitude = KRPCI_SpaceCenter::Flight_get_SurfaceAltitude(activeVessel.flight);
-    _activeVessel.maxThrust = KRPCI_SpaceCenter::Vessel_get_Thrust(activeVessel.vessel);
-    _activeVessel.mass = KRPCI_SpaceCenter::Vessel_get_Mass(activeVessel.vessel);
+    _activeVessel.verticalSpeed = KRPCI_SpaceCenter::Flight_get_VerticalSpeed(_activeVessel.flight);
+    _activeVessel.radarAltitude = KRPCI_SpaceCenter::Flight_get_SurfaceAltitude(_activeVessel.flight);
+    _activeVessel.maxThrust = KRPCI_SpaceCenter::Vessel_get_Thrust(_activeVessel.vessel);
+    _activeVessel.mass = KRPCI_SpaceCenter::Vessel_get_Mass(_activeVessel.vessel);
 
-    _activeVessel.control = KRPCI_SpaceCenter::Vessel_get_Control(activeVessel.vessel);
+    _activeVessel.control = KRPCI_SpaceCenter::Vessel_get_Control(_activeVessel.vessel);
     _activeVessel.control_pitch = KRPCI_SpaceCenter::Control_get_Pitch(_activeVessel.control);
-    _activeVessel.throttle = KRPCI_SpaceCenter::Control_get_Throttle(activeVessel.control);
+    _activeVessel.throttle = KRPCI_SpaceCenter::Control_get_Throttle(_activeVessel.control);
 
     _kspGravConstant = KRPCI_SpaceCenter::get_G();
-    _activeVessel.gravitationalForce = (activeVessel.orbit_body_mass * kspGravConstant) /
-      (activeVessel.orbit_body_distance * activeVessel.orbit_body_distance);
+    _activeVessel.gravitationalForce = (_activeVessel.orbit_body_mass * kspGravConstant) /
+      (_activeVessel.orbit_body_distance * _activeVessel.orbit_body_distance);
 
     KRPC::Tuple vessel_direction = KRPCI_SpaceCenter::Vessel_Direction(_activeVessel.vessel, _activeVessel.reference_surface);
     KRPCI::UnpackTuple(vessel_direction, _activeVessel.vessel_direction.x, _activeVessel.vessel_direction.y, _activeVessel.vessel_direction.z);
+
+
+    /// PARTS
+    KRPC::List partsList; string partName = "IR Rotatron";
+    partsList = KRPCI_SpaceCenter::Parts_WithTitle(_activeVessel.parts, partName);
+    //partsList = KRPCI_SpaceCenter::Parts_get_All(_activeVessel.parts);
+    //partsList = KRPCI_SpaceCenter::Parts_InStage(_activeVessel.parts, 0);
+    int numParts = partsList.items_size();
+
+    if (numParts > 0)
+      KRPCI::DecodeVarint(_activeVesselParts.rotatron1, (BYTE *)partsList.items(0).data(), partsList.items(0).size());
+
+    stringstream ss;
+
+    ss << "found " << numParts << " parts" << endl;
+    for (int i = 0; i < numParts; i++) {
+      KRPCI_SpaceCenter::PART part;
+      KRPCI::DecodeVarint(part, (BYTE *)partsList.items(i).data(), partsList.items(i).size());
+      partName = KRPCI_SpaceCenter::Part_get_Title(part);
+      
+      ss << "  " << i << ": " << partName << " (" << partName.length() << ")" << endl;
+    }
+
+    //SetDebugMessage(ss.str());
   }
   catch (KRPC_Exception &e)
   {
-    SetDebugMessage(string(e.what()));
+    SetDebugMessage(e.what());
   }
 }
 

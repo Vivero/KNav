@@ -714,6 +714,26 @@ void KRPCI::PrintBytesHex(const char *buf, UINT size)
     printf("0x%02X ", (unsigned char)buf[i]);
 }
 
+string KRPCI::EncodeString(UINT16 tagNum, string str)
+{
+  // form the tag/type byte
+  //BYTE tag_type = (tagNum << 3) | 0x02; // 0x02 indicates STRING type
+
+  // encode the string length as a varint
+  BYTE strLength_varint[10];
+  UINT64 strLength = str.length();
+  INT strLength_varintSize = 0;
+  EncodeVarint(strLength, strLength_varint, strLength_varintSize);
+
+  // form the final encoded string (length + string)
+  string encodedString("");
+  //encodedString.append((const char *)&tag_type, 1);
+  encodedString.append((const char *)strLength_varint, strLength_varintSize);
+  encodedString.append(str);
+
+  return encodedString;
+}
+
 void KRPCI::EncodeVarint(UINT32 value, BYTE *buf, INT &size)
 {
   size = google::protobuf::io::CodedOutputStream::VarintSize32(value);
