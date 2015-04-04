@@ -6061,7 +6061,7 @@ void KRPCI_SpaceCenter::DockingPort_set_Name(DOCKINGPORT DockingPort, string val
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, value)); 
+  arg1->set_value(KRPCI::EncodeString(value)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -7397,7 +7397,7 @@ bool KRPCI_SpaceCenter::Module_HasField(MODULE Module, string name) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -7435,7 +7435,7 @@ string KRPCI_SpaceCenter::Module_GetField(MODULE Module, string name) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -7471,7 +7471,7 @@ bool KRPCI_SpaceCenter::Module_HasEvent(MODULE Module, string name) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -7508,7 +7508,7 @@ void KRPCI_SpaceCenter::Module_TriggerEvent(MODULE Module, string name) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -7539,7 +7539,7 @@ bool KRPCI_SpaceCenter::Module_HasAction(MODULE Module, string name) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -7576,7 +7576,7 @@ void KRPCI_SpaceCenter::Module_SetAction(MODULE Module, string name, bool value)
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   KRPC::Argument *arg2 = krpcRequest.add_arguments(); 
   arg2->set_position(2); 
@@ -9250,7 +9250,7 @@ KRPC::List KRPCI_SpaceCenter::Parts_WithName(PARTS Parts, string name) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -9286,7 +9286,7 @@ KRPC::List KRPCI_SpaceCenter::Parts_WithTitle(PARTS Parts, string title) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, title)); 
+  arg1->set_value(KRPCI::EncodeString(title)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -9322,7 +9322,7 @@ KRPC::List KRPCI_SpaceCenter::Parts_WithModule(PARTS Parts, string moduleName) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, moduleName)); 
+  arg1->set_value(KRPCI::EncodeString(moduleName)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -9436,7 +9436,7 @@ KRPC::List KRPCI_SpaceCenter::Parts_ModulesWithName(PARTS Parts, string moduleNa
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, moduleName)); 
+  arg1->set_value(KRPCI::EncodeString(moduleName)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -9472,7 +9472,7 @@ KRPCI_SpaceCenter::DOCKINGPORT KRPCI_SpaceCenter::Parts_DockingPortWithName(PART
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -9989,7 +9989,7 @@ bool KRPCI_SpaceCenter::PartResources_HasResource(PARTRESOURCES PartResources, s
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -10027,7 +10027,7 @@ double KRPCI_SpaceCenter::PartResources_Max(PARTRESOURCES PartResources, string 
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -10063,7 +10063,7 @@ double KRPCI_SpaceCenter::PartResources_Amount(PARTRESOURCES PartResources, stri
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -10983,7 +10983,7 @@ void KRPCI_SpaceCenter::Vessel_set_Name(VESSEL Vessel, string value) {
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, value)); 
+  arg1->set_value(KRPCI::EncodeString(value)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -11694,7 +11694,7 @@ bool KRPCI_SpaceCenter::VesselResources_HasResource(VESSELRESOURCES VesselResour
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   krpcInterface.SendRequest(krpcRequest); 
 
@@ -11732,7 +11732,7 @@ double KRPCI_SpaceCenter::VesselResources_Max(VESSELRESOURCES VesselResources, s
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   KRPC::Argument *arg2 = krpcRequest.add_arguments(); 
   arg2->set_position(2); 
@@ -11781,7 +11781,7 @@ double KRPCI_SpaceCenter::VesselResources_Amount(VESSELRESOURCES VesselResources
 
   KRPC::Argument *arg1 = krpcRequest.add_arguments(); 
   arg1->set_position(1); 
-  arg1->set_value(KRPCI::EncodeString(2, name)); 
+  arg1->set_value(KRPCI::EncodeString(name)); 
 
   KRPC::Argument *arg2 = krpcRequest.add_arguments(); 
   arg2->set_position(2); 

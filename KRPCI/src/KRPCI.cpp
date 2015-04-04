@@ -714,7 +714,7 @@ void KRPCI::PrintBytesHex(const char *buf, UINT size)
     printf("0x%02X ", (unsigned char)buf[i]);
 }
 
-string KRPCI::EncodeString(UINT16 tagNum, string str)
+string KRPCI::EncodeString(string str)
 {
   // form the tag/type byte
   //BYTE tag_type = (tagNum << 3) | 0x02; // 0x02 indicates STRING type

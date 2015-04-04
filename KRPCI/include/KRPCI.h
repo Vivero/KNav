@@ -58,7 +58,7 @@ public:
   // general util
   static void        PrintBytesHex(const char *buf, UINT size);
 
-  static string      EncodeString(UINT16 tagNum, string str);
+  static string      EncodeString(string str);
 
   static void        EncodeVarint(UINT32 value, BYTE *buf, INT &size);
   static void        EncodeVarint(UINT64 value, BYTE *buf, INT &size);

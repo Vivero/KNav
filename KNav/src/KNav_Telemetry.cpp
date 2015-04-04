@@ -23,6 +23,8 @@ rpcClientTerminate(FALSE),
 elapsedTime_ms(0),
 sleepPeriod(0),
 _rpcClientThread(NULL),
+_activeVessel(),
+_activeVesselParts(),
 _inFlight(FALSE),
 _kspUniversalTime(0.0),
 _kspGravConstant(0.0),
@@ -103,19 +105,102 @@ void KNav_Telemetry::Update()
     //partsList = KRPCI_SpaceCenter::Parts_InStage(_activeVessel.parts, 0);
     int numParts = partsList.items_size();
 
-    if (numParts > 0)
-      KRPCI::DecodeVarint(_activeVesselParts.rotatron1, (BYTE *)partsList.items(0).data(), partsList.items(0).size());
-
     stringstream ss;
 
-    ss << "found " << numParts << " parts" << endl;
+    if (numParts > 0) {
+      KRPCI::DecodeVarint(_activeVesselParts.rotatron1, (BYTE *)partsList.items(0).data(), partsList.items(0).size());
+      partName = KRPCI_SpaceCenter::Part_get_Name(_activeVesselParts.rotatron1);
+
+      ss << "Found Part: " << partName << endl;
+
+      KRPC::List modulesList = KRPCI_SpaceCenter::Part_get_Modules(_activeVesselParts.rotatron1);
+      KRPC::List moduleEvents, moduleActions;
+      KRPC::Dictionary moduleFields; KRPC::DictionaryEntry moduleField;
+      int numModules = modulesList.items_size();
+      int numModuleEvents = 0;
+      int numModuleActions = 0;
+      int numModuleFields = 0;
+      ss << "Found " << numModules << " modules: " << endl << endl;
+
+      for (int i = 0; i < numModules; i++) {
+        KRPCI_SpaceCenter::MODULE module;
+        KRPCI::DecodeVarint(module, (BYTE *)modulesList.items(i).data(), modulesList.items(i).size());
+
+        string moduleName = KRPCI_SpaceCenter::Module_get_Name(module);
+        ss << "  " << moduleName;
+
+        if (moduleName.compare("MuMechToggle") == 0) {
+          _activeVesselParts.rotatron1_module = module;
+          ss << " (" << module << ")";
+
+          moduleEvents = KRPCI_SpaceCenter::Module_get_Events(_activeVesselParts.rotatron1_module);
+          numModuleEvents = moduleEvents.items_size();
+
+          moduleActions = KRPCI_SpaceCenter::Module_get_Actions(_activeVesselParts.rotatron1_module);
+          numModuleActions = moduleActions.items_size();
+
+          moduleFields = KRPCI_SpaceCenter::Module_get_Fields(_activeVesselParts.rotatron1_module);
+          numModuleFields = moduleFields.entries_size();
+        }
+        ss << endl;
+      } // numModules
+
+      if (numModuleEvents > 0) {
+        ss << endl << "Found " << numModuleEvents << " events: " << endl << endl;
+      }
+      for (int i = 0; i < numModuleEvents; i++) {
+        string moduleEventName = moduleEvents.items(i).substr(1);
+        ss << "  " << moduleEventName << endl;
+      } // numModuleEvents
+
+      if (numModuleActions > 0) {
+        ss << endl << "Found " << numModuleActions << " actions: " << endl << endl;
+      }
+      for (int i = 0; i < numModuleActions; i++) {
+        string moduleActionName = moduleActions.items(i).substr(1);
+        
+        ss << "  " << moduleActionName << " ";
+
+        if (moduleActionName.compare("Move +") == 0) {
+          _activeVesselParts.rotatron1_move_plus.assign(moduleActionName);
+          ss << "(STORED)";
+        }
+        else if (moduleActionName.compare("Move -") == 0) {
+          _activeVesselParts.rotatron1_move_minus.assign(moduleActionName);
+          ss << "(STORED)";
+        }
+
+        ss << endl;
+      } // numModuleActions
+
+      if (numModuleFields > 0) {
+        ss << endl << "Found " << numModuleFields << " fields: " << endl << endl;
+      }
+      for (int i = 0; i < numModuleFields; i++) {
+        moduleField = moduleFields.entries(i);
+        string moduleFieldKey = moduleField.key().substr(1);
+        string moduleFieldVal = moduleField.value().substr(1);
+
+        if (moduleFieldKey.compare("Rotation:") == 0) {
+          _activeVesselParts.rotatron1_angle = std::stod(moduleFieldVal);
+          //_activeVesselParts.rotatron1_angle = 0.0;
+        }
+
+        ss << "  " << moduleFieldKey << " : " << moduleFieldVal << endl;
+      } // numModuleActions
+
+    } // numParts > 0
+
+    
+
+    /*ss << "found " << numParts << " parts" << endl;
     for (int i = 0; i < numParts; i++) {
       KRPCI_SpaceCenter::PART part;
       KRPCI::DecodeVarint(part, (BYTE *)partsList.items(i).data(), partsList.items(i).size());
       partName = KRPCI_SpaceCenter::Part_get_Title(part);
       
       ss << "  " << i << ": " << partName << " (" << partName.length() << ")" << endl;
-    }
+    }*/
 
     //SetDebugMessage(ss.str());
   }

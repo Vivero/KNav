@@ -71,7 +71,16 @@ public:
   // struct to hold all parts
   //
   typedef struct VesselParts {
+    VesselParts() : rotatron1(0), rotatron1_module(0), rotatron1_angle(0.0),
+    rotatron1_move_plus(), rotatron1_move_minus(), rotatron1_move_center(),
+    rail1(0) {}
+    
     KRPCI_SpaceCenter::PART            rotatron1;
+    KRPCI_SpaceCenter::MODULE          rotatron1_module;
+    double                             rotatron1_angle;
+    string                             rotatron1_move_plus;
+    string                             rotatron1_move_minus;
+    string                             rotatron1_move_center;
     KRPCI_SpaceCenter::PART            rail1;
   } VesselParts_t;
 

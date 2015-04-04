@@ -410,7 +410,7 @@ std::string KRPCI_Interpreter::FunctionBody(KRPC::Procedure &krpcProcedure)
         ss << "  arg" << i << "->set_value((const char *)uint_buf, uint_size); " << endl;
       }
       else if (typeIsString) {
-        ss << "  arg" << i << "->set_value(KRPCI::EncodeString(" << (i + 1) << ", " << paramName << ")); " << endl;
+        ss << "  arg" << i << "->set_value(KRPCI::EncodeString(" << paramName << ")); " << endl;
       }
       else {
         ss << "  arg" << i << "->set_value((const char *)(&" << paramName << "), sizeof(" << paramName << ")); " << endl;

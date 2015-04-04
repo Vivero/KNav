@@ -76,6 +76,7 @@ private:
 
   // control programs
   //
+  void Control_None();
   void Control_Hover();
   void Control_Emergency();
 

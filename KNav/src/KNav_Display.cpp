@@ -283,6 +283,8 @@ void KNav_Display::Display_VesselInfo()
   printf(" %-17s : %17.0f\n", "max thrust", knavTelemetry.activeVessel.maxThrust);
   printf(" %-17s : %17.1f\n", "radar altitude", knavTelemetry.activeVessel.radarAltitude);
   printf(" %-17s : %17.1f\n", "v. speed", knavTelemetry.activeVessel.verticalSpeed);
+  printf("\n");
+  printf(" %-17s : %17.2f\n", "rotatron", knavTelemetry.activeVesselParts.rotatron1_angle);
 }
 
 void KNav_Display::Display_Program()

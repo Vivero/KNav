@@ -29,12 +29,17 @@ void KNav_Control::Control()
   {
     switch (programActiveIndex)
     {
+    case NONE:
+      Control_None();
+      break;
+
     case HOVER:
       Control_Hover();
       break;
 
     case EMERGENCY:
       Control_Emergency();
+      break;
 
     default:
       break;
@@ -48,6 +53,33 @@ void KNav_Control::Control()
   }
 
   prevSystemTime_ms = systemTime_ms;
+}
+
+void KNav_Control::Control_None()
+{
+  
+  ///// PARTS API
+  bool move = true;
+  string action = "Move +";
+  action = knavTelemetry.activeVesselParts.rotatron1_move_plus;
+
+  if (knavTelemetry.activeVesselParts.rotatron1_module != 0) {
+
+    //cout << "Control: " << action << endl;
+    printf("control_none triggered. rot:%.2f, %lu, %s (%db) \n",
+      knavTelemetry.activeVesselParts.rotatron1_angle,
+      knavTelemetry.activeVesselParts.rotatron1_module,
+      action.c_str(), action.length());
+
+    KRPCI::PrintBytesHex(action.c_str(), action.length());
+
+    function<void()> commandFn = std::bind(KRPCI_SpaceCenter::Module_SetAction,
+      knavTelemetry.activeVesselParts.rotatron1_module,
+      action, move);
+
+    knavTelemetry.PushCommand(commandFn);
+  }
+
 }
 
 void KNav_Control::Control_Hover()
@@ -117,8 +149,6 @@ void KNav_Control::Control_Hover()
   float length = 10.0;
   commandFn = std::bind(KRPCI_SpaceCenter::DrawDirection, dir, knavTelemetry.activeVessel.reference_vessel, col, length);
   //knavTelemetry.PushCommand(commandFn);
-
-
 
 
 
