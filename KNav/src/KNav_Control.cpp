@@ -6,17 +6,17 @@ KNav_Control::KNav_Control(KNav_Telemetry &telemetry) :
 knavTelemetry(telemetry),
 knavTelemetryThread(telemetry.rpcClientThread),
 programActiveIndex(NONE),
-reference(5.0),
+reference(-5.0),
 deltaTime(0.0),
 prevSystemTime_ms(GetTickCount64()),
 PID_vspeed(telemetry.activeVessel.verticalSpeed, 0.0, 1.0, 0.1),
 PID_altitude(telemetry.activeVessel.radarAltitude, -0.5, 0.5, 0.1),
 ref_vspeed(0.0)
 {
-  programList.emplace_back(NONE, "None");
-  programList.emplace_back(HOVER, "Hover");
-  programList.emplace_back(ASCENT, "Ascent");
-  programList.emplace_back(EMERGENCY, "Emergency Shut Off");
+  for (INT i = 0; i <= (int)EMERGENCY; i++) {
+    ProgramID_t programId = (ProgramID_t)i;
+    programList.emplace_back(programId, ToString(programId));
+  }
 }
 
 void KNav_Control::Control()
@@ -53,6 +53,30 @@ void KNav_Control::Control()
   }
 
   prevSystemTime_ms = systemTime_ms;
+}
+
+string KNav_Control::ToString(ProgramID_t id)
+{
+  string retval = "";
+  switch (id)
+  {
+  case NONE:
+    retval = "None";
+    break;
+
+  case HOVER:
+    retval = "Hover";
+    break;
+
+  case PARTS_TEST:
+    retval = "Parts Test";
+    break;
+
+  case EMERGENCY:
+    retval = "Emergency Shut Off";
+    break;
+  }
+  return retval;
 }
 
 void KNav_Control::Control_None()
@@ -102,7 +126,8 @@ void KNav_Control::Control_Hover()
   PID_altitude.Kp = deltaTime;
   PID_altitude.Ki = 2.0 * PID_altitude.Kp / PID_altitude.Tosc;
   PID_altitude.Kd = PID_altitude.Kp * PID_altitude.Tosc / 8.0 * 10.0;
-  ref_vspeed = PID_altitude.Control(deltaTime, reference);
+  //ref_vspeed = PID_altitude.Control(deltaTime, reference);
+  ref_vspeed = reference;
 
   // thrust control
   double u_gain = maxT / (mass * grav) * deltaTime;

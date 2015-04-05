@@ -23,7 +23,7 @@ public:
   enum ProgramID_t {
     NONE = 0,
     HOVER = 1,
-    ASCENT = 2,
+    PARTS_TEST = 2,
     EMERGENCY = 3
   };
 
@@ -49,6 +49,11 @@ public:
   //
   void Control();
 
+  // utility functions
+  //
+  static string ToString(ProgramID_t id);
+
+
 
   //
   //  PUBLIC FIELDS
@@ -59,8 +64,8 @@ public:
   atomic<ProgramID_t>      programActiveIndex;
 
   // control variables
-  atomic<double>           reference;
-  atomic<double>           ref_vspeed;
+  double                   reference;
+  double                   ref_vspeed;
 
 
   /*=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%=%*/

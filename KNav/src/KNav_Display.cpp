@@ -81,10 +81,10 @@ void KNav_Display::Display()
         knavControl.reference = 0.0;
       }
       else if(userInput.key7) {
-        knavControl.reference = knavControl.reference + 0.1;
+        knavControl.reference = knavControl.reference + 0.5;
       }
       else if (userInput.key1) {
-        knavControl.reference = knavControl.reference - 0.1;
+        knavControl.reference = knavControl.reference - 0.5;
       }
 
       if (userInput.left) {
