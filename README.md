@@ -1,5 +1,9 @@
 # KNav
 
+**KNAV IS DEPRECATED, I'VE MOVED ON TO A PYTHON-BASED IMPLEMENTATION [HERE](https://github.com/Vivero/KerbalPie)**
+
+------
+
 KNav is a flexible platform for implementing computer-assisted navigation and control of vessels in Kerbal Space Program.
 
 KNav is a [kRPC](https://github.com/djungelorm/krpc)-compatible CLI client, written in **C++**. KNav is currently only supported on **Windows**, and compiled with MS Visual Studio Express 2013 for Windows Desktop.
